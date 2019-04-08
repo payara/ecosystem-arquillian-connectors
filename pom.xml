@@ -191,6 +191,8 @@
         <module>payara-micro</module>
         <module>payara-client-ee7</module>
         <module>payara-client-ee8</module>
+      <module>payara-micro-deployer</module>
+      <module>payara-micro-remote</module>
     </modules>
 
     <dependencyManagement>
