@@ -48,7 +48,7 @@
     <name>Payara EE 7 client libs</name>
     
     <properties>
-        <jersey.version>2.25.1.payara-p7</jersey.version>
+        <version.jersey>2.25.1.payara-p7</version.jersey>
     </properties>
 
     <dependencies>
@@ -69,31 +69,31 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>${jersey.version}</version>
+			<version>${version.jersey}</version>
 		</dependency>
 
                 <dependency>
                     <groupId>org.glassfish.jersey.ext</groupId>
                     <artifactId>jersey-microprofile-rest-client</artifactId>
-                    <version>${jersey.version}</version>
+                    <version>${version.jersey}</version>
                 </dependency>
 
                 <dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey.version}</version>
+			<version>${version.jersey}</version>
 		</dependency>
 
                 <dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-processing</artifactId>
-			<version>${jersey.version}</version>
+			<version>${version.jersey}</version>
 		</dependency>
 	
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-jaxb</artifactId>
-			<version>${jersey.version}</version>
+			<version>${version.jersey}</version>
 		</dependency>
     </dependencies>
     

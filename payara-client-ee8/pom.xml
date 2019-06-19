@@ -49,7 +49,7 @@
     <name>Payara EE 8 client libs</name>
         
     <properties>
-        <jersey.version>2.29.payara-p3</jersey.version>
+        <version.jersey>2.29.payara-p3</version.jersey>
     </properties>
 
     <dependencies>
@@ -77,45 +77,45 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
         
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
         
         <dependency>
             <groupId>org.glassfish.jersey.ext.microprofile</groupId>
             <artifactId>jersey-mp-rest-client</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
 
         <!-- JAX-RS client supporting JSON responses -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-processing</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
 	
         <!-- JAX-RS client supporting XML responses -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-jaxb</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
 	
         <!-- JAX-RS client able to work with SSE -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-sse</artifactId>
-            <version>${jersey.version}</version>
+            <version>${version.jersey}</version>
         </dependency>
     </dependencies>
         
