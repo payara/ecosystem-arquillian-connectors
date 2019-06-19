@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) 2018 Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) [2018-2019] Payara Foundation and/or its affiliates. All rights reserved.
  
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -48,7 +48,7 @@
     <name>Payara EE 7 client libs</name>
     
     <properties>
-        <jersey.version>2.25.1.payara-p4</jersey.version>
+        <jersey.version>2.25.1.payara-p7</jersey.version>
     </properties>
 
     <dependencies>
