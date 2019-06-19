@@ -43,14 +43,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>fish.payara.arquillian</groupId>
-        <artifactId>parent-payara-containers</artifactId>
-        <version>1.0.Beta4-SNAPSHOT</version>
-    </parent>
-
+    <groupId>fish.payara.arquillian</groupId>
     <artifactId>payara-client-ee8</artifactId>
+    <version>1.0.Beta4-SNAPSHOT</version>
     <name>Payara EE 8 client libs</name>
+
+    <properties>
+        <version.jersey>2.29.payara-p3</version.jersey>
+    </properties>
 
     <dependencies>
 
