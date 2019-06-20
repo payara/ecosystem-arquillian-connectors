@@ -69,7 +69,7 @@
         <version>1.1</version>
     </parent>
 
-    <artifactId>payara-container-4-common</artifactId>
+    <artifactId>payara-container-common</artifactId>
     <name>Arquillian Container Payara Common Services</name>
 
     <dependencies>
