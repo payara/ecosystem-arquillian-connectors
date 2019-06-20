@@ -141,9 +141,4 @@
 
     </dependencies>
 
-    <distributionManagement>
-        <relocation>
-            <artifactId>payara-container-common</artifactId>
-        </relocation>
-    </distributionManagement>
 </project>

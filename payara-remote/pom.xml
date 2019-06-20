@@ -169,10 +169,4 @@
             </build>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <relocation>
-            <artifactId>arquillian-payara-server-remote</artifactId>
-        </relocation>
-    </distributionManagement>
 </project>
