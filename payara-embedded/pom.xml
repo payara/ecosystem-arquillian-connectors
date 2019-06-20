@@ -153,5 +153,11 @@
             </dependencies>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <relocation>
+            <artifactId>arquillian-payara-server-embedded</artifactId>
+        </relocation>
+    </distributionManagement>
 </project>
 

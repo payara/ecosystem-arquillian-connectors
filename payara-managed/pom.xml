@@ -197,4 +197,10 @@
             </properties>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <relocation>
+            <artifactId>arquillian-payara-server-managed</artifactId>
+        </relocation>
+    </distributionManagement>
 </project>

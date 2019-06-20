@@ -149,4 +149,9 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <relocation>
+            <artifactId>arquillian-payara-micro-managed</artifactId>
+        </relocation>
+    </distributionManagement>
 </project>
