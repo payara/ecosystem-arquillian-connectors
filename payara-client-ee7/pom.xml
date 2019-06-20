@@ -39,12 +39,12 @@
  
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>payara-client-ee7</artifactId>
-    <version>1.0.Beta4-SNAPSHOT</version>
+    <version>1.1</version>
     <name>Payara EE 7 client libs</name>
     
     <properties>
@@ -53,48 +53,48 @@
 
     <dependencies>
         
-        	<!-- WebSocket client dependencies -->
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-client</artifactId>
-			<version>1.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.tyrus</groupId>
-			<artifactId>tyrus-container-grizzly-client</artifactId>
-			<version>1.13</version>
-		</dependency>
+        <!-- WebSocket client dependencies -->
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-grizzly-client</artifactId>
+            <version>1.13</version>
+        </dependency>
 	
-		<!-- JAX-RS client API dependencies -->
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>${version.jersey}</version>
-		</dependency>
+        <!-- JAX-RS client API dependencies -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
 
-                <dependency>
-                    <groupId>org.glassfish.jersey.ext</groupId>
-                    <artifactId>jersey-microprofile-rest-client</artifactId>
-                    <version>${version.jersey}</version>
-                </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-microprofile-rest-client</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
 
-                <dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${version.jersey}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
 
-                <dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-processing</artifactId>
-			<version>${version.jersey}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-processing</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
 	
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-jaxb</artifactId>
-			<version>${version.jersey}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
     </dependencies>
     
     <repositories>
