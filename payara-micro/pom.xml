@@ -68,7 +68,7 @@
         <version>1.0.Beta4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>arquillian-payara-micro-5-managed</artifactId>
+    <artifactId>arquillian-payara-micro-managed</artifactId>
     <name>Arquillian Container Payara Micro</name>
 
     <description>
@@ -79,7 +79,7 @@
     <dependencies>
         <dependency>
             <groupId>fish.payara.arquillian</groupId>
-            <artifactId>payara-container-4-common</artifactId>
+            <artifactId>payara-container-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

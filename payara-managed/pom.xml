@@ -68,7 +68,7 @@
         <version>1.0.Beta4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>arquillian-payara-server-4-managed</artifactId>
+    <artifactId>arquillian-payara-server-managed</artifactId>
     <name>Arquillian Container Payara Managed</name>
 
     <description>
@@ -79,7 +79,7 @@
     <dependencies>
         <dependency>
             <groupId>fish.payara.arquillian</groupId>
-            <artifactId>payara-container-4-common</artifactId>
+            <artifactId>payara-container-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 
