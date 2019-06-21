@@ -67,7 +67,7 @@
         <version>1.1</version>
     </parent>
 
-    <artifactId>arquillian-payara-server-4-embedded</artifactId>
+    <artifactId>arquillian-payara-server-embedded</artifactId>
     <name>Arquillian Container Payara Embedded</name>
 
     <description>
@@ -154,10 +154,5 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <relocation>
-            <artifactId>arquillian-payara-server-embedded</artifactId>
-        </relocation>
-    </distributionManagement>
 </project>
 
