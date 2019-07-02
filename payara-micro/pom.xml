@@ -2,7 +2,7 @@
 <!--
   DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-  Copyright (c) 2017-2018 Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) 2017-2019 Payara Foundation and/or its affiliates. All rights reserved.
  
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -65,10 +65,10 @@
     <parent>
         <groupId>fish.payara.arquillian</groupId>
         <artifactId>parent-payara-containers</artifactId>
-        <version>1.0.Beta4-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>arquillian-payara-micro-5-managed</artifactId>
+    <artifactId>arquillian-payara-micro-managed</artifactId>
     <name>Arquillian Container Payara Micro</name>
 
     <description>
@@ -79,7 +79,7 @@
     <dependencies>
         <dependency>
             <groupId>fish.payara.arquillian</groupId>
-            <artifactId>payara-container-4-common</artifactId>
+            <artifactId>payara-container-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

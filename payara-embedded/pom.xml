@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) 2017-2018 Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) 2017-2019 Payara Foundation and/or its affiliates. All rights reserved.
  
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -64,10 +64,10 @@
     <parent>
         <groupId>fish.payara.arquillian</groupId>
         <artifactId>parent-payara-containers</artifactId>
-        <version>1.0.Beta4-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>arquillian-payara-server-4-embedded</artifactId>
+    <artifactId>arquillian-payara-server-embedded</artifactId>
     <name>Arquillian Container Payara Embedded</name>
 
     <description>
@@ -153,5 +153,6 @@
             </dependencies>
         </profile>
     </profiles>
+
 </project>
 
