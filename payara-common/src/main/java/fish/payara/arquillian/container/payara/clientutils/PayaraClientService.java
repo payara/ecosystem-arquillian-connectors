@@ -157,6 +157,7 @@ public class PayaraClientService implements PayaraClient {
     private ServerStartegy serverInstance;
     private PayaraClientUtil clientUtil;
     private NodeAddress nodeAddress;
+    private Map<String,String> deploymentAliases = new HashMap<>();
 
     private final CommonPayaraConfiguration configuration;
 
@@ -315,8 +316,13 @@ public class PayaraClientService implements PayaraClient {
      */
     public HTTPContext doDeploy(String name, FormDataMultiPart form) {
         // Deploy the application on the Payara server
-        getClientUtil().POSTMultiPartRequest(APPLICATION, form);
+        Map<String, Object> deploymentResult = getClientUtil().POSTMultiPartRequest(APPLICATION, form);
 
+        String deployedName = deploymentResult.containsKey("properties")
+            ? ((Map<String,String>)deploymentResult.get("properties")).get("name")
+            : null;
+
+        name = registerDeployedName(name, deployedName);
         // Fetch the list of SubComponents of the application
         Map<String, Object> subComponentsResponse = getClientUtil().GETRequest(APPLICATION_COMPONENTS.replace("{application}", name));
         
@@ -350,6 +356,26 @@ public class PayaraClientService implements PayaraClient {
         return httpContext;
     }
 
+    private String registerDeployedName(String name, String deployedName) {
+        if (deployedName != null && !deployedName.equals(name)) {
+            log.info("Deployment "+name+" resulted in application with different name "+deployedName);
+            deploymentAliases.put(name, deployedName);
+            return deployedName;
+        } else {
+            return name;
+        }
+    }
+
+    private String unregisterDeployedName(String name) {
+        String alias = deploymentAliases.remove(name);
+        return alias != null ? alias : name;
+    }
+
+    private String getDeployedName(String name) {
+        String alias = deploymentAliases.get(name);
+        return alias != null ? alias : name;
+    }
+
     /**
      * Undeploy the component
      *
@@ -358,6 +384,7 @@ public class PayaraClientService implements PayaraClient {
      * @return resultMap
      */
     public Map<String, Object> doUndeploy(String name, FormDataMultiPart form) {
+        name = unregisterDeployedName(name);
         return getClientUtil().POSTMultiPartRequest(APPLICATION_RESOURCE.replace("{name}", name), form);
     }
 
@@ -390,7 +417,6 @@ public class PayaraClientService implements PayaraClient {
     /**
      * Get the list of clusters
      *
-     * @param none
      * @return map of clusters
      */
     private Map<String, String> getClustersList() {
@@ -406,7 +432,7 @@ public class PayaraClientService implements PayaraClient {
      */
     private String getApplicationContextRoot(String name) {
         // Pull the contextRoot from the application's attributes
-        return getClientUtil().getAttributes(APPLICATION_RESOURCE.replace("{name}", name))
+        return getClientUtil().getAttributes(APPLICATION_RESOURCE.replace("{name}", getDeployedName(name)))
                               .get("contextRoot");
     }
 
@@ -452,7 +478,7 @@ public class PayaraClientService implements PayaraClient {
         Set<Entry<String, String>> subComponents = 
             getProperties(
                 clientUtil
-                    .GETRequest(APPLICATION_SERVLETS.replace("{application}", name).replace("{module}", module))
+                    .GETRequest(APPLICATION_SERVLETS.replace("{application}", getDeployedName(name)).replace("{module}", module))
             ).entrySet();
         
         for (Entry<String, String> subComponent : subComponents) {
