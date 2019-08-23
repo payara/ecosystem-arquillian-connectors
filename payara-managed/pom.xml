@@ -136,6 +136,16 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+        <scope>test</scope>
+      </dependency>
 
     </dependencies>
 
@@ -196,6 +206,15 @@
                 <glassfish.home>payara41</glassfish.home>
             </properties>
         </profile>
+      <profile>
+        <id>payara-5</id>
+        <properties>
+          <groupId>fish.payara.distributions</groupId>
+          <artifactId>payara</artifactId>
+          <version.payara>5.192</version.payara>
+          <glassfish.home>payara5</glassfish.home>
+        </properties>
+      </profile>
     </profiles>
 
 </project>
