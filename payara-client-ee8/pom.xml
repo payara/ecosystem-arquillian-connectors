@@ -49,7 +49,7 @@
     <name>Payara EE 8 client libs</name>
         
     <properties>
-        <version.jersey>2.29.payara-p3</version.jersey>
+        <version.jersey>2.29.1</version.jersey>
     </properties>
 
     <dependencies>
