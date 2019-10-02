@@ -76,7 +76,7 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.4.1.Final</version.arquillian_core>
+        <version.arquillian_core>1.5.0.Final</version.arquillian_core>
         <version.jersey>2.29.payara-p3</version.jersey>
         <version.javaee.api>8.0</version.javaee.api>
         <version.maven.surefire.plugin>3.0.0-M3</version.maven.surefire.plugin>
