@@ -51,7 +51,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <version.payara.micro>5.193</version.payara.micro>
+        <version.payara.micro>5.193.1</version.payara.micro>
     </properties>
 
     <artifactId>payara-micro-deployer</artifactId>
