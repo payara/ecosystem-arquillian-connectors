@@ -53,6 +53,15 @@ public class PayaraVersion {
         this.versionString = versionString;
     }
 
+    /**
+     * A Utility method used for comparing PayaraVersion objects
+     * 
+     * When the parsed PayaraVersion is equal to the version it's being compared
+     * to, the method will return true
+     * 
+     * @param minimum - the version you wish to compare to
+     * @return true if minimum is equal to or greater than the version to compare
+     */
     public boolean isMoreRecentThan(PayaraVersion minimum) {
         String minString = minimum.versionString;
         try (Scanner minScanner = new Scanner(minString); Scanner vScanner = new Scanner(versionString)) {
@@ -83,7 +92,7 @@ public class PayaraVersion {
                     vPart--;
                 }
 
-                if (vPart > minPart) {
+                if (vPart >= minPart) {
                     return true;
                 }
                 if (minPart > vPart) {

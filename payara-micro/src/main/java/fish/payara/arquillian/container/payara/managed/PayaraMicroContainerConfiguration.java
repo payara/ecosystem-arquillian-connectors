@@ -201,7 +201,11 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
 
         try (JarFile microJarFile = new JarFile(getMicroJarFile())) {
             ZipEntry pomProperties = microJarFile
-                    .getEntry("META-INF/maven/fish.payara.micro/payara-micro-boot/pom.properties");
+                    .getEntry(
+                            
+                            //TO-DO: Add Version Check Code
+                            
+                            "META-INF/maven/fish.payara.micro/payara-micro-boot/pom.properties");
             Properties microProperties = new Properties();
             microProperties.load(microJarFile.getInputStream(pomProperties));
             this.microVersion = new PayaraVersion(microProperties.getProperty("version"));
