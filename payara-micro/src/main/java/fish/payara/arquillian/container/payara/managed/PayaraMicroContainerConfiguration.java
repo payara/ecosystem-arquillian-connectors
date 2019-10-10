@@ -211,10 +211,10 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
             this.microVersion = new PayaraVersion(microProperties.getProperty("major_version") + microProperties.getProperty("minor_version"));
         } catch (IOException e) {
             throw new IllegalArgumentException(
-                    "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar." + zipEntryDir, e);
+                    "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.", e);
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(
-                    "Unable to find Payara Micro Boot Properties. Are you using the latest arquillian container?", e);
+                    "Unable to find Payara Micro Boot Properties. Are you using the latest arquillian container? \n Directory searched: " + zipEntryDir, e);
         }
         notNull(getMicroVersion(), "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.");
 
