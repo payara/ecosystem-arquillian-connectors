@@ -52,6 +52,10 @@ public class PayaraVersion {
         }
         this.versionString = versionString;
     }
+    
+    public boolean isMoreRecentThan(String versionString) {
+        return isMoreRecentThan(new PayaraVersion(versionString));
+    }
 
     /**
      * A Utility method used for comparing PayaraVersion objects

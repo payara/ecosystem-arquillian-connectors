@@ -200,18 +200,22 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
         }
 
         try (JarFile microJarFile = new JarFile(getMicroJarFile())) {
-            ZipEntry pomProperties = microJarFile
-                    .getEntry(
-                            
-                            //TO-DO: Add Version Check Code
-                            
-                            "META-INF/maven/fish.payara.micro/payara-micro-boot/pom.properties");
+            
+            //Change made to accommodate package refactor in version 5.194+
+            String zipEntryDir = (getMicroVersion().isMoreRecentThan("5.194-SNAPSHOT")) 
+                    ? "META-INF/maven/fish.payara.server.internal.extras/payara-micro-boot/pom.properties" 
+                    : "META-INF/maven/fish.payara.micro/payara-micro-boot/pom.properties";
+            
+            ZipEntry pomProperties = microJarFile.getEntry(zipEntryDir);
             Properties microProperties = new Properties();
             microProperties.load(microJarFile.getInputStream(pomProperties));
             this.microVersion = new PayaraVersion(microProperties.getProperty("version"));
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.", e);
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException(
+                    "Unable to find Payara Micro Boot Properties. Are you using the latest arquillian container?", e);
         }
         notNull(getMicroVersion(), "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.");
 
