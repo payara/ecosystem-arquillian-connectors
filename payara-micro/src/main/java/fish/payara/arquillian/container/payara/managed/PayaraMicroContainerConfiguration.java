@@ -199,22 +199,22 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
             throw new IllegalArgumentException("Could not locate the Payara Micro Jar file " + getMicroJar());
         }
 
-        String zipEntryDir = ""; //Created here for the sakes of debugging in case of NPE
+        String zipEntryFileDir = ""; //Created here for the sakes of debugging in case of NPE
         
         try (JarFile microJarFile = new JarFile(getMicroJarFile())) {
             
-            zipEntryDir = "MICRO-INF/domain/branding/glassfish-version.properties";
-            ZipEntry pomProperties = microJarFile.getEntry(zipEntryDir);
+            zipEntryFileDir = "MICRO-INF/domain/branding/glassfish-version.properties";
+            ZipEntry pomProperties = microJarFile.getEntry(zipEntryFileDir);
 
             Properties microProperties = new Properties();
             microProperties.load(microJarFile.getInputStream(pomProperties));
-            this.microVersion = new PayaraVersion(microProperties.getProperty("major_version") + microProperties.getProperty("minor_version"));
+            this.microVersion = new PayaraVersion(microProperties.getProperty("major_version") + "." + microProperties.getProperty("minor_version"));
         } catch (IOException e) {
             throw new IllegalArgumentException(
-                    "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.", e);
+                    "Unable to find Payara Micro Version. Please check the file is a valid Payara Micro Jar.", e);
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(
-                    "Unable to find Payara Micro Boot Properties. Are you using the latest arquillian container? \n Directory searched: " + zipEntryDir, e);
+                    "Unable to find Payara Micro Version. Please check the file is a valid Payara Micro Jar.\nProperties File Used: " + zipEntryFileDir, e);
         }
         notNull(getMicroVersion(), "Unable to find Payara Micro Jar version. Please check the file is a valid Payara Micro Jar.");
 
