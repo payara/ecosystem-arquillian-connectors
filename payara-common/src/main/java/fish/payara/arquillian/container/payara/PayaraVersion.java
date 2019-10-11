@@ -53,6 +53,45 @@ public class PayaraVersion {
         this.versionString = versionString;
     }
     
+    /**
+     * This Method takes in properties from a glassfish-version.properties file and constructs
+     * a new PayaraVersion object from this data. It is assumed that there will always be a
+     * major and minor version but update, payaraMajor and payaraMinor may be null.
+     * 
+     * @param major - Major version of the server
+     * @param minor - Minor version of the server
+     * @param update - Stability/Feature patch version of the server
+     * @param payaraMinor - Minor version of Payara 4 versions
+     * @param payaraUpdate - Stability/Feat patch version of Payara 4 versions
+     * @return 
+     */
+    public static PayaraVersion buildVersionFromBrandingProperties(String major, String minor, String update, 
+                                                                    String payaraMinor, String payaraUpdate)
+                                                                    throws IllegalArgumentException {
+        StringBuilder versionBuilder = new StringBuilder();
+        String[] subVersionValues = {minor, update, payaraMinor, payaraUpdate};
+        
+        if(major == null || major.isEmpty()) {
+            throw new IllegalArgumentException("Invalid properties - Major version value cannot be null or empty.");
+        }
+        
+        versionBuilder.append(major); //should always be a major version with value
+        
+        for(int i = 0; i < subVersionValues.length; i++) {
+            
+            String curVersionValue = subVersionValues[i];
+            
+            if(curVersionValue != null && !curVersionValue.isEmpty()) {
+                versionBuilder.append(".");
+                versionBuilder.append(curVersionValue);
+            } else {
+                break;
+            }
+        }
+        
+        return new PayaraVersion(versionBuilder.toString());
+    }
+    
     public boolean isMoreRecentThan(String versionString) {
         return isMoreRecentThan(new PayaraVersion(versionString));
     }
@@ -97,7 +136,7 @@ public class PayaraVersion {
                 }
 
                 if (vPart >= minPart) {
-                    return true;
+                    continue;
                 }
                 if (minPart > vPart) {
                     return false;
@@ -105,5 +144,10 @@ public class PayaraVersion {
             }
         }
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return versionString;
     }
 }
