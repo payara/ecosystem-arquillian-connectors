@@ -207,7 +207,12 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
 
             Properties microProperties = new Properties();
             microProperties.load(microJarFile.getInputStream(pomProperties));
-            this.microVersion = new PayaraVersion(microProperties.getProperty("major_version") + "." + microProperties.getProperty("minor_version"));
+            this.microVersion = PayaraVersion.buildVersionFromBrandingProperties(microProperties.getProperty("major_version"),
+                                                                                 microProperties.getProperty("minor_version"),
+                                                                                 microProperties.getProperty("update_version"),
+                                                                                 microProperties.getProperty("payara_version"),
+                                                                                 microProperties.getProperty("payara_update_version"));
+            
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Unable to find Payara Micro Version. Please check the file is a valid Payara Micro Jar.", e);
