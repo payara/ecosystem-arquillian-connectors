@@ -135,8 +135,8 @@ public class PayaraVersion {
                     vPart--;
                 }
 
-                if (vPart >= minPart) {
-                    continue;
+                if (vPart > minPart) {
+                    return true;
                 }
                 if (minPart > vPart) {
                     return false;
