@@ -37,6 +37,7 @@
  */
 package fish.payara.arquillian.container.payara;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -75,5 +76,33 @@ public class PayaraVersionTest {
         v1 = new PayaraVersion("5.181-SNAPSHOT");
         v2 = new PayaraVersion("5.181");
         assertTrue("The version check failed.", v2.isMoreRecentThan(v1));
+    }
+    
+    @Test
+    public void testVersionBuilderFromProperties() {
+    
+        PayaraVersion testVersion = PayaraVersion.buildVersionFromBrandingProperties("5", "192", "", "", "");
+        assertEquals("5.192", testVersion.toString());
+        
+        testVersion = PayaraVersion.buildVersionFromBrandingProperties("5", "192", "3", "", "");
+        assertEquals("5.192.3", testVersion.toString());
+        
+        testVersion = PayaraVersion.buildVersionFromBrandingProperties("4", "1", "2", null, null);
+        assertEquals("4.1.2", testVersion.toString());
+        
+        testVersion = PayaraVersion.buildVersionFromBrandingProperties("4", "1", "2", "191", "");
+        assertEquals("4.1.2.191", testVersion.toString());
+        
+        testVersion = PayaraVersion.buildVersionFromBrandingProperties("4", "1", "2", "191", "7");
+        assertEquals("4.1.2.191.7", testVersion.toString());
+        
+        testVersion = PayaraVersion.buildVersionFromBrandingProperties("4", "1", null, "191", "7");
+        assertEquals("4.1", testVersion.toString());
+    
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void whenMajorValueIsNull_thanExpectIllegalArgument() {
+        PayaraVersion testVersion = PayaraVersion.buildVersionFromBrandingProperties(null, "192", "", "", "");
     }
 }
