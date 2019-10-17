@@ -160,8 +160,8 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>${groupId}</groupId>
-                                    <artifactId>${artifactId}</artifactId>
+                                    <groupId>fish.payara.distributions</groupId>
+                                    <artifactId>payara</artifactId>
                                     <version>${version.payara}</version>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
@@ -192,29 +192,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>payara-4</id>
-             <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <groupId>fish.payara.distributions</groupId>
-                <artifactId>payara</artifactId>
-                <version.payara>4.1.1.171.1</version.payara>
-                <glassfish.home>payara41</glassfish.home>
-            </properties>
-        </profile>
-      <profile>
-        <id>payara-5</id>
-        <properties>
-          <groupId>fish.payara.distributions</groupId>
-          <artifactId>payara</artifactId>
-          <version.payara>5.192</version.payara>
-          <glassfish.home>payara5</glassfish.home>
-        </properties>
-      </profile>
-    </profiles>
 
 </project>
