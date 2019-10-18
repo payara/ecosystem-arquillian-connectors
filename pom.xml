@@ -95,7 +95,6 @@
 
         <version.payara>5.193</version.payara>
         <glassfish.home>payara5</glassfish.home>
-        <enableDerby>true</enableDerby>
     </properties>
 
     <scm>
