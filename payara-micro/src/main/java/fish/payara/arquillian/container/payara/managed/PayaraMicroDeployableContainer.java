@@ -131,7 +131,7 @@ public class PayaraMicroDeployableContainer implements DeployableContainer<Payar
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 4.0");
+        return new ProtocolDescription("Servlet 3.0");
     }
 
     @Override
