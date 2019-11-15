@@ -89,6 +89,7 @@
             <arquillian.version>${arquillian.version}</arquillian.version>
           </filterProperties>
           <streamLogs>true</streamLogs>
+          <skipInvocation>${skipTests}</skipInvocation>
         </configuration>
         <executions>
           <execution>
