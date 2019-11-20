@@ -80,9 +80,9 @@
         <version.jersey>2.29.payara-p5</version.jersey>
         <version.javaee>8</version.javaee>
         <version.javaee.api>8.0.1</version.javaee.api>
-        <version.maven.surefire.plugin>3.0.0-M3</version.maven.surefire.plugin>
-        <version.maven.source.plugin>3.1.0</version.maven.source.plugin>
-        <version.maven.jar.plugin>3.1.2</version.maven.jar.plugin>
+        <version.maven.surefire.plugin>3.0.0-M4</version.maven.surefire.plugin>
+        <version.maven.source.plugin>3.2.0</version.maven.source.plugin>
+        <version.maven.jar.plugin>3.2.0</version.maven.jar.plugin>
         <version.maven.gpg.plugin>1.6</version.maven.gpg.plugin>
         <version.maven.javadoc.plugin>3.1.1</version.maven.javadoc.plugin>
         <version.maven.shade.plugin>3.2.1</version.maven.shade.plugin>
@@ -204,6 +204,7 @@
         <module>payara-client-ee8</module>
         <module>payara-micro-deployer</module>
         <module>payara-micro-remote</module>
+        <module>integration-tests</module>
     </modules>
 
     <dependencyManagement>

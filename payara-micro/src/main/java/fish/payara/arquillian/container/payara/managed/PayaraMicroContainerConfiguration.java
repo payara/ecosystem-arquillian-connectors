@@ -41,6 +41,7 @@ import static org.jboss.arquillian.container.spi.client.deployment.Validate.notN
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -73,11 +74,25 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
     private String cmdOptions = getConfigurableVariable("payara.cmdOptions", "MICRO_CMD_OPTIONS", null);
 
     private String extraMicroOptions = getConfigurableVariable("payara.extraMicroOptions", "EXTRA_MICRO_OPTIONS", null);
+
+    private boolean microOnClasspath;
     
     private final String ZIP_ENTRY_FILE_DIR = "MICRO-INF/domain/branding/glassfish-version.properties";
 
     public String getMicroJar() {
+        if (microJar == null) {
+            URL microUrl = getClass().getClassLoader().getResource("fish/payara/micro/PayaraMicro.class");
+            if (microUrl != null && microUrl.getProtocol().equals("jar") && microUrl.getPath().startsWith("file:")) {
+                String path = microUrl.getPath();
+                microOnClasspath = true;
+                microJar = path.substring(5, path.indexOf('!'));
+            }
+        }
         return microJar;
+    }
+
+    boolean isMicroOnClasspath() {
+        return microOnClasspath;
     }
 
     public File getMicroJarFile() {
