@@ -47,10 +47,66 @@
     <version>2.1-SNAPSHOT</version>
     <name>Payara EE 7 client libs</name>
 
+    <description>
+        Payara Container integrations for the Arquillian Project.
+        Based on the JBoss GlassFish container integrations.
+    </description>
+
+    <url>https://github.com/payara/Payara</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</connection>
+        <url>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</url>
+        <developerConnection>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</developerConnection>
+        <tag>${project.version}</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>CDDL + GPLv2 with classpath exception</name>
+            <url>http://glassfish.java.net/nonav/public/CDDL+GPL.html</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Payara Team</name>
+            <email>info@payara.fish</email>
+            <organization>Payara Foundation</organization>
+            <organizationUrl>http://www.payara.fish</organizationUrl>
+        </developer>
+    </developers>
+
     <properties>
         <version.jersey>2.29.payara-p5</version.jersey>
     </properties>
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.8</version>
+            <extensions>true</extensions>
+            <configuration>
+                <serverId>ossrh</serverId>
+                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            </configuration>
+        </plugin>
 
+        <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+                <autoVersionSubmodules>true</autoVersionSubmodules>
+                <pushChanges>false</pushChanges>
+                <localCheckout>true</localCheckout>
+                <releaseProfiles>release</releaseProfiles>
+            </configuration>
+        </plugin>    
+    </plugins>
+    </build>
     <dependencies>
         
         <!-- WebSocket client dependencies -->
@@ -121,5 +177,30 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
