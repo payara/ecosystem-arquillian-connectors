@@ -51,10 +51,6 @@
 
   <artifactId>integration-tests</artifactId>
 
-  <properties>
-    <payara.version>5.193.1</payara.version>
-    <arquillian.version>1.5.0.Final</arquillian.version>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -75,6 +71,19 @@
       <scope>test</scope>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>fish.payara.arquillian</groupId>
+      <artifactId>payara-micro-remote</artifactId>
+      <scope>test</scope>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>fish.payara.arquillian</groupId>
+      <artifactId>payara-micro-deployer</artifactId>
+      <type>war</type>
+      <scope>test</scope>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -85,8 +94,8 @@
         <configuration>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
           <filterProperties>
-            <payara.version>${payara.version}</payara.version>
-            <arquillian.version>${arquillian.version}</arquillian.version>
+            <payara.version>${version.payara}</payara.version>
+            <arquillian.version>${version.arquillian_core}</arquillian.version>
           </filterProperties>
           <streamLogs>true</streamLogs>
           <skipInvocation>${skipTests}</skipInvocation>
