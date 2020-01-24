@@ -84,6 +84,10 @@ class PayaraServerControl {
 
     private static final Logger logger = Logger.getLogger(PayaraServerControl.class.getName());
 
+    private static final String JAVA_COMMAND_FILENAME = System.getProperty("os.name").toLowerCase().contains("win")
+        ? "java.exe"
+        : "java";
+
     private static final String DERBY_MISCONFIGURED_HINT =
         "It seems that the Payara version you are running might have a problem starting embedded "  +
         "Derby database. Please take a look at the server logs. You can also switch off 'enableDerby' property in your 'arquillian.xml' if you don't need it. For " +
@@ -231,9 +235,9 @@ class PayaraServerControl {
     }
 
     private File getJavaProgram() {
-        final File asjJavaCommand = getJavaProgramFromEnv("AS_JAVA");
-        if (asjJavaCommand != null) {
-            return asjJavaCommand;
+        final File asJavaCommand = getJavaProgramFromEnv("AS_JAVA");
+        if (asJavaCommand != null) {
+            return asJavaCommand;
         }
         final File javaHomeCommand = getJavaProgramFromEnv("JAVA_HOME");
         if (javaHomeCommand != null) {
@@ -248,7 +252,7 @@ class PayaraServerControl {
             return null;
         }
         final Path mainFolder = new File(property).toPath();
-        final File java = mainFolder.resolve("bin").resolve("java").toFile();
+        final File java = mainFolder.resolve("bin").resolve(JAVA_COMMAND_FILENAME).toFile();
         // note: if it is executable will be tested by it's execution
         if (java.exists()) {
             return java;
