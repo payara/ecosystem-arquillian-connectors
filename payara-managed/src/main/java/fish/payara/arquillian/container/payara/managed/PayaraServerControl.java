@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -59,7 +59,9 @@ package fish.payara.arquillian.container.payara.managed;
 import static java.lang.Runtime.getRuntime;
 import static java.util.logging.Level.SEVERE;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -79,8 +81,12 @@ import fish.payara.arquillian.container.payara.process.SilentOutputConsumer;
  * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
  */
 class PayaraServerControl {
-    
+
     private static final Logger logger = Logger.getLogger(PayaraServerControl.class.getName());
+
+    private static final String JAVA_COMMAND_FILENAME = System.getProperty("os.name").toLowerCase().contains("win")
+        ? "java.exe"
+        : "java";
 
     private static final String DERBY_MISCONFIGURED_HINT =
         "It seems that the Payara version you are running might have a problem starting embedded "  +
@@ -90,7 +96,7 @@ class PayaraServerControl {
 
     private static final List<String> NO_ARGS = new ArrayList<>();
 
-    private PayaraManagedContainerConfiguration config;
+    private final PayaraManagedContainerConfiguration config;
     private Thread shutdownHook;
 
     PayaraServerControl(PayaraManagedContainerConfiguration config) {
@@ -104,11 +110,11 @@ class PayaraServerControl {
             startDerbyDatabase();
         }
 
-        final List<String> args = new ArrayList<String>();
+        final List<String> args = new ArrayList<>();
         if (config.isDebug()) {
             args.add("--debug");
         }
-        
+
         executeAdminDomainCommand("Starting container", "start-domain", args, createProcessOutputConsumer());
     }
 
@@ -131,7 +137,7 @@ class PayaraServerControl {
         if (!config.isEnableDerby()) {
             return;
         }
-        
+
         try {
             executeAdminDomainCommand("Starting database", "start-database", NO_ARGS, createProcessOutputConsumer());
         } catch (LifecycleException e) {
@@ -155,6 +161,7 @@ class PayaraServerControl {
 
     private void registerShutdownHook() {
         shutdownHook = new Thread(new Runnable() {
+            @Override
             public void run() {
                 logger.warning("Forcing container shutdown");
                 try {
@@ -165,7 +172,7 @@ class PayaraServerControl {
                 }
             }
         });
-        
+
         getRuntime().addShutdownHook(shutdownHook);
     }
 
@@ -185,11 +192,11 @@ class PayaraServerControl {
         }
 
         int result;
-        
+
         try (
             CloseableProcess process = new CloseableProcess(new ProcessBuilder(cmd).redirectErrorStream(true).start());
             ConsoleReader consoleReader = new ConsoleReader(process, consumer)) {
-            
+
             new Thread(consoleReader).start();
             result = process.waitFor();
 
@@ -204,8 +211,9 @@ class PayaraServerControl {
     }
 
     private List<String> buildCommand(String command, List<String> args) {
-        List<String> cmd = new ArrayList<String>();
-        cmd.add("java");
+        List<String> cmd = new ArrayList<>();
+        File javaCmd = getJavaProgram();
+        cmd.add(javaCmd == null ? "java" : javaCmd.getAbsolutePath());
 
         cmd.add("-jar");
         cmd.add(config.getAdminCliJar().getAbsolutePath());
@@ -222,8 +230,34 @@ class PayaraServerControl {
         if (config.isOutputToConsole()) {
             return new OutputLoggingConsumer();
         }
-        
+
         return new SilentOutputConsumer();
     }
 
+    private File getJavaProgram() {
+        final File asJavaCommand = getJavaProgramFromEnv("AS_JAVA");
+        if (asJavaCommand != null) {
+            return asJavaCommand;
+        }
+        final File javaHomeCommand = getJavaProgramFromEnv("JAVA_HOME");
+        if (javaHomeCommand != null) {
+            return javaHomeCommand;
+        }
+        return null;
+    }
+
+    private File getJavaProgramFromEnv(final String key) {
+        final String property = System.getenv(key);
+        if (property == null) {
+            return null;
+        }
+        final Path mainFolder = new File(property).toPath();
+        final File java = mainFolder.resolve("bin").resolve(JAVA_COMMAND_FILENAME).toFile();
+        // note: if it is executable will be tested by it's execution
+        if (java.exists()) {
+            return java;
+        }
+        // nothing usable found
+        return null;
+    }
 }
