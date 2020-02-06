@@ -396,7 +396,7 @@ public class PayaraClientService implements PayaraClient {
         try {
             getClientUtil().GETRequest("");
         } catch (ProcessingException clientEx) {
-            if (clientEx.getCause()!= null && clientEx.getCause().getClass().equals(ConnectException.class)) {
+            if (clientEx.getCause()!= null && clientEx.getCause() instanceof ConnectException) {
                 // We were unable to connect to the DAS through Jersey
                 return false;
             }
