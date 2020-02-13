@@ -76,7 +76,7 @@ public abstract class GlassFishManagedDeploymentTestTemplate {
     @Test
     public void shouldBeAbleToDeployEnterpriseArchive() throws Exception {
         final String servletPath =
-            greeterImplementationBasedOnDerbyEnabled().getAnnotation(WebServlet.class).value()[0];
+            greeterImplementationBasedOnH2Enabled().getAnnotation(WebServlet.class).value()[0];
 
         final URLConnection response = new URL(deploymentUrl.toString() + servletPath.substring(1)).openConnection();
 
@@ -86,9 +86,9 @@ public abstract class GlassFishManagedDeploymentTestTemplate {
         assertThat(result, equalTo("Hello"));
     }
 
-    static Class<?> greeterImplementationBasedOnDerbyEnabled() {
-        if (Boolean.valueOf(System.getProperty("enableDerby"))) {
-            return GreeterServletWithDerby.class;
+    static Class<?> greeterImplementationBasedOnH2Enabled() {
+        if (Boolean.valueOf(System.getProperty("enableH2"))) {
+            return GreeterServletWithH2.class;
         }
         return GreeterServlet.class;
     }

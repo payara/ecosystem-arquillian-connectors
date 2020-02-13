@@ -75,20 +75,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 /**
- * Simple servlet for testing deployment with enabled derby database.
+ * Simple servlet for testing deployment with enabled h2 database.
  *
  * @author <a href="http://community.jboss.org/people/aslak">Aslak Knutsen</a>
  * @author <a href="http://community.jboss.org/people/LightGuard">Jason Porter</a>
  */
 @WebServlet("/Greeter")
-public class GreeterServletWithDerby extends HttpServlet {
+public class GreeterServletWithH2 extends HttpServlet {
 
     private static final String GET_LOG_ARCHIVE_MODE_QUERY =
-        "VALUES SYSCS_UTIL.SYSCS_GET_DATABASE_PROPERTY('derby.storage.logArchiveMode')";
+        "VALUES SYSCS_UTIL.SYSCS_GET_DATABASE_PROPERTY('h2.storage.logArchiveMode')";
 
     private static final long serialVersionUID = 8249673615048070666L;
 
-    private static final Logger logger = Logger.getLogger(GreeterServletWithDerby.class.getName());
+    private static final Logger logger = Logger.getLogger(GreeterServletWithH2.class.getName());
 
     @EJB
     private Greeter greeter;
@@ -98,7 +98,7 @@ public class GreeterServletWithDerby extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // test the DataSource and thus the working DB connection with an internal Derby query
+        // test the DataSource and thus the working DB connection with an internal H2 query
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -112,7 +112,7 @@ public class GreeterServletWithDerby extends HttpServlet {
             if (!rs.getBoolean(1)) {
                 writer.append(this.greeter.greet());
             } else {
-                writer.append("Something terrible happened! No greetings! derby.storage.logArchiveMode is set to TRUE");
+                writer.append("Something terrible happened! No greetings! h2.storage.logArchiveMode is set to TRUE");
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);

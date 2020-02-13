@@ -56,15 +56,13 @@
  */
 package fish.payara.arquillian.container.payara.managed;
 
+import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
+import java.io.File;
+import org.jboss.arquillian.container.spi.ConfigurationException;
+
 import static fish.payara.arquillian.container.payara.clientutils.PayaraClient.ADMINSERVER;
 import static org.jboss.arquillian.container.spi.client.deployment.Validate.configurationDirectoryExists;
 import static org.jboss.arquillian.container.spi.client.deployment.Validate.notNull;
-
-import java.io.File;
-
-import org.jboss.arquillian.container.spi.ConfigurationException;
-
-import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 
 /**
  * Configuration for Managed Payara containers.
@@ -81,7 +79,7 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
     private String domain;
     private boolean debug;
     private boolean allowConnectingToRunningServer;
-    private boolean enableDerby;
+    private boolean enableH2;
 
     public String getGlassFishHome() {
         return glassFishHome;
@@ -144,15 +142,15 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
         this.allowConnectingToRunningServer = allowConnectingToRunningServer;
     }
 
-    public boolean isEnableDerby() {
-        return enableDerby;
+    public boolean isEnableH2() {
+        return enableH2;
     }
 
     /**
-     * @param enableDerby Flag to start/stop the registered derby server using standard Derby port
+     * @param enableH2 Flag to start/stop the registered H2 server using standard H2 port
      */
-    public void setEnableDerby(boolean enableDerby) {
-        this.enableDerby = enableDerby;
+    public void setEnableH2(boolean enableH2) {
+        this.enableH2 = enableH2;
     }
 
     @Override

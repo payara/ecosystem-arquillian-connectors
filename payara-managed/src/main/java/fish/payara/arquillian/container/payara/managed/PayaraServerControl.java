@@ -56,9 +56,11 @@
  */
 package fish.payara.arquillian.container.payara.managed;
 
-import static java.lang.Runtime.getRuntime;
-import static java.util.logging.Level.SEVERE;
-
+import fish.payara.arquillian.container.payara.process.CloseableProcess;
+import fish.payara.arquillian.container.payara.process.ConsoleReader;
+import fish.payara.arquillian.container.payara.process.OutputLoggingConsumer;
+import fish.payara.arquillian.container.payara.process.ProcessOutputConsumer;
+import fish.payara.arquillian.container.payara.process.SilentOutputConsumer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -66,14 +68,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 
-import fish.payara.arquillian.container.payara.process.CloseableProcess;
-import fish.payara.arquillian.container.payara.process.ConsoleReader;
-import fish.payara.arquillian.container.payara.process.OutputLoggingConsumer;
-import fish.payara.arquillian.container.payara.process.ProcessOutputConsumer;
-import fish.payara.arquillian.container.payara.process.SilentOutputConsumer;
+import static java.lang.Runtime.getRuntime;
+import static java.util.logging.Level.SEVERE;
 
 /**
  * A class for issuing asadmin commands using the admin-cli.jar of the GlassFish distribution.
@@ -88,11 +86,9 @@ class PayaraServerControl {
         ? "java.exe"
         : "java";
 
-    private static final String DERBY_MISCONFIGURED_HINT =
+    private static final String H2_MISCONFIGURED_HINT =
         "It seems that the Payara version you are running might have a problem starting embedded "  +
-        "Derby database. Please take a look at the server logs. You can also switch off 'enableDerby' property in your 'arquillian.xml' if you don't need it. For " +
-        "more information please refer to relevant issues for existing workarounds: https://java.net/jira/browse/GLASSFISH-21004 " +
-        "https://issues.apache.org/jira/browse/DERBY-6438";
+        "H2 database. Please take a look at the server logs. You can also switch off 'enableH2' property in your 'arquillian.xml' if you don't need it.";
 
     private static final List<String> NO_ARGS = new ArrayList<>();
 
@@ -106,8 +102,8 @@ class PayaraServerControl {
     void start() throws LifecycleException {
         registerShutdownHook();
 
-        if (config.isEnableDerby()) {
-            startDerbyDatabase();
+        if (config.isEnableH2()) {
+            startH2Database();
         }
 
         final List<String> args = new ArrayList<>();
@@ -125,7 +121,7 @@ class PayaraServerControl {
         } catch (LifecycleException failedStoppingContainer) {
             logger.log(Level.SEVERE, "Failed stopping container.", failedStoppingContainer);
         } finally {
-            stopDerbyDatabase();
+            stopH2Database();
         }
     }
 
@@ -133,21 +129,21 @@ class PayaraServerControl {
         executeAdminDomainCommand("Stopping container", "stop-domain", NO_ARGS, createProcessOutputConsumer());
     }
 
-    private void startDerbyDatabase() throws LifecycleException {
-        if (!config.isEnableDerby()) {
+    private void startH2Database() throws LifecycleException {
+        if (!config.isEnableH2()) {
             return;
         }
 
         try {
             executeAdminDomainCommand("Starting database", "start-database", NO_ARGS, createProcessOutputConsumer());
         } catch (LifecycleException e) {
-            logger.warning(DERBY_MISCONFIGURED_HINT);
+            logger.warning(H2_MISCONFIGURED_HINT);
             throw e;
         }
     }
 
-    private void stopDerbyDatabase() throws LifecycleException {
-        if (config.isEnableDerby()) {
+    private void stopH2Database() throws LifecycleException {
+        if (config.isEnableH2()) {
             executeAdminDomainCommand("Stopping database", "stop-database", NO_ARGS, createProcessOutputConsumer());
         }
     }
@@ -166,7 +162,7 @@ class PayaraServerControl {
                 logger.warning("Forcing container shutdown");
                 try {
                     stopContainer();
-                    stopDerbyDatabase();
+                    stopH2Database();
                 } catch (LifecycleException e) {
                     logger.log(Level.SEVERE, "Failed stopping services through shutdown hook.", e);
                 }

@@ -78,7 +78,7 @@ public class GlassFishManagedDeployEarTest extends GlassFishManagedDeploymentTes
     @Deployment(testable = false)
     public static Archive<?> getTestArchive() {
         final WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war")
-            .addClasses(greeterImplementationBasedOnDerbyEnabled());
+            .addClasses(greeterImplementationBasedOnH2Enabled());
         final JavaArchive ejb = ShrinkWrap.create(JavaArchive.class, "test.jar")
             .addClasses(Greeter.class);
         return ShrinkWrap.create(EnterpriseArchive.class, "test.ear")

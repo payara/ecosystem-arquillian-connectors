@@ -100,18 +100,18 @@ public class AsAdminCommandTestCase {
     public void shouldBeAbleToIssueAsAdminCommand() throws Exception {
         assertNotNull("Verify that the asadmin CommandRunner resource is available", commandRunner);
 
-        CommandResult result = commandRunner.run("create-jdbc-connection-pool", "--datasourceclassname=org.apache.derby.jdbc.EmbeddedXADataSource",
+        CommandResult result = commandRunner.run("create-jdbc-connection-pool", "--datasourceclassname=org.h2.jdbcx.JdbcDataSource",
                 "--restype=javax.sql.XADataSource",
-                "--property=portNumber=1527:password=APP:user=APP" + ":serverName=localhost:databaseName=my_database" + ":connectionAttributes=create\\=true",
-                "my_derby_pool");
+                "--property=URL=jdbc\\:h2\\:${com.sun.aas.instanceRoot}/lib/databases/embedded_default;AUTO_SERVER\\=TRUE",
+                "my_h2_pool");
 
         assertEquals("Verify 'create-jdbc-connection-pool' asadmin command", SUCCESS, result.getExitStatus());
 
-        result = commandRunner.run("create-jdbc-resource", "--connectionpoolid", "my_derby_pool", "jdbc/my_database");
+        result = commandRunner.run("create-jdbc-resource", "--connectionpoolid", "my_h2_pool", "jdbc/my_database");
 
         assertEquals("Verify 'create-jdbc-resource' asadmin command", SUCCESS, result.getExitStatus());
 
-        result = commandRunner.run("ping-connection-pool", "my_derby_pool");
+        result = commandRunner.run("ping-connection-pool", "my_h2_pool");
 
         assertEquals("Verify asadmin command 'ping-connection-pool'", SUCCESS, result.getExitStatus());
 
