@@ -2,6 +2,6 @@
 <!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN"
     "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
 <resources>
-  <jdbc-resource pool-name="ArquillianEmbeddedDerbyPool"
+  <jdbc-resource pool-name="ArquillianEmbeddedH2Pool"
       jndi-name="jdbc/arquillian2"/>
 </resources>

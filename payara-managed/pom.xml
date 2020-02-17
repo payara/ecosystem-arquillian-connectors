@@ -181,7 +181,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <glassfish.home>${glassfish.home}</glassfish.home>
-                        <enableDerby>${enableDerby}</enableDerby>
+                        <enableH2>${enableH2}</enableH2>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
