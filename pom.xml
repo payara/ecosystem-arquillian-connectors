@@ -76,7 +76,7 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.5.0.Final</version.arquillian_core>
+        <version.arquillian_core>1.1.13.Final</version.arquillian_core>
         <version.jersey>2.25.1.payara-p7</version.jersey>
         <version.javaee>7</version.javaee>
         <version.javaee.api>7.0</version.javaee.api>
@@ -88,7 +88,7 @@
         <version.maven.shade.plugin>3.2.1</version.maven.shade.plugin>
         <version.maven.enforcer.plugin>3.0.0-M2</version.maven.enforcer.plugin>
 
-        <version.java>1.8</version.java>
+        <version.java>1.7</version.java>
         <maven.compiler.target>${version.java}</maven.compiler.target>
         <maven.compiler.source>${version.java}</maven.compiler.source>
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
@@ -370,29 +370,7 @@
                     <releaseProfiles>release</releaseProfiles>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M2</version>
-                <executions>
-                    <execution>
-                        <id>enforce-java</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireJavaVersion>
-                                    <version>[${version.java},${version.maven.enforcer.java.limit})</version>
-                                    <message>JDK8 only please</message>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
+            
         </plugins>
         <pluginManagement>
             <plugins>

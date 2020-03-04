@@ -40,7 +40,10 @@ package fish.payara.arquillian.container.payara.process;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CloseableProcess extends Process implements AutoCloseable {
 
@@ -69,9 +72,13 @@ public class CloseableProcess extends Process implements AutoCloseable {
         return getWrapped().getErrorStream();
     }
 
-    @Override
     public boolean isAlive() {
-        return getWrapped().isAlive();
+        try {
+            getWrapped().exitValue();
+            return false;
+        } catch(IllegalThreadStateException e) {
+            return true;
+        }
     }
 
     @Override
@@ -79,9 +86,28 @@ public class CloseableProcess extends Process implements AutoCloseable {
         return getWrapped().waitFor();
     }
 
-    @Override
     public boolean waitFor(long timeout, TimeUnit unit) throws InterruptedException {
-        return getWrapped().waitFor(timeout, unit);
+        
+        // while the given time hasn't elapsed, check if the process has died
+        // if it has, return true - else return false when time elapsed
+        Timer timer = new Timer();
+        final float timeToStop = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(timeout, unit);
+        final AtomicReference<Boolean> threadStopped = new AtomicReference<Boolean>(false);
+        
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(isAlive()) {
+                    threadStopped.set(true);
+                    cancel();
+                }
+                if(System.currentTimeMillis() >= timeToStop) {
+                    cancel();
+                }
+            }
+        }, 0, 100);
+        
+        return threadStopped.get();
     }
 
     @Override
@@ -94,9 +120,10 @@ public class CloseableProcess extends Process implements AutoCloseable {
         getWrapped().destroy();
     }
 
-    @Override
     public Process destroyForcibly() {
-        return getWrapped().destroyForcibly();
+        Process destroyed = getWrapped();
+        getWrapped().destroy();
+        return destroyed;
     }
 
     @Override
