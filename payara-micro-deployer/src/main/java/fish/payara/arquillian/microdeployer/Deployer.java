@@ -55,12 +55,11 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 @RequestScoped
 @Path("/application")
@@ -69,13 +68,40 @@ public class Deployer {
 
     @Inject
     PayaraMicroRuntime runtime;
+    
+    String errorMessage = null;
 
     @Path("/{name}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @PUT
     public JsonObject deploy(@PathParam("name") String name, InputStream archive) throws Throwable {
         LOGGER.info("Starting deployment of "+name);
-        if (!runtime.deploy(name, archive)) {
+        
+        errorMessage = null;
+        CaptureExceptionHandler handler = new CaptureExceptionHandler();
+
+        Logger serverLogger = LogManager.getLogManager().getLogger("javax.enterprise.system.core");
+        if (serverLogger != null) {
+            LOGGER.fine("Found server logger, adding handler");
+            serverLogger.addHandler(handler);
+        } else {
+            LOGGER.warning("Didn't find server logger, won't be able to detect information about deployment errors");
+        }
+        
+        boolean deployOk = false;
+        try {
+            deployOk = runtime.deploy(name, archive);
+        } finally {
+            if (serverLogger != null) {
+                LOGGER.fine("Removing handler from server logger");
+                serverLogger.removeHandler(handler);
+                errorMessage = handler.deploymentExceptionMessage;
+                LOGGER.fine("Error message: " + errorMessage);
+            }
+        }
+                
+        
+        if (!deployOk) {
             throw badRequest();
         }
 
@@ -100,9 +126,20 @@ public class Deployer {
     }
 
     private ClientErrorException badRequest() {
+        if (errorMessage != null) {
+            return badRequest(errorMessage);
+        } else {
+            return badRequest("Application failed to deploy. Check logs");
+        }
+    }
+
+    private ClientErrorException badRequest(String message) {
         JsonObjectBuilder resultBuilder = Json.createObjectBuilder();
+        if (message != null) {
+            resultBuilder.add("message", message);
+        }
         return new ClientErrorException(Response.status(Response.Status.BAD_REQUEST)
-            .entity(resultBuilder.add("message", "Application failed to deploy. Check logs").build())
+            .entity(resultBuilder.build())
             .build());
     }
 
@@ -111,6 +148,29 @@ public class Deployer {
     public void undeploy(@PathParam("name") String name) {
         LOGGER.info("Starting undeployment of " + name);
         runtime.undeploy(name);
+    }
+
+    private static class CaptureExceptionHandler extends Handler {
+
+        String deploymentExceptionMessage;
+        
+        @Override
+        public void publish(LogRecord record) {
+            if (record.getThrown() != null
+                    && record.getThrown().getClass().getSimpleName().equals("DeploymentException")) {
+                LOGGER.info("DeploymentException detected");
+                deploymentExceptionMessage = record.getThrown().getMessage();
+            }
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() throws SecurityException {
+        }
+
     }
 
 }
