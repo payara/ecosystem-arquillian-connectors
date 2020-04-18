@@ -80,10 +80,10 @@ class DeployerClient {
                 JsonObject json = Json.createReader(httpConnection.getErrorStream()).readObject();
                 String message = json.getString("message", null);
                 if (message != null) {
-                    if (message.startsWith("CDI definition failure")) {
-                        throw new DefinitionException("Deployment failed. " + this + " returned " + responseCode);
-                    } else if (message.startsWith("CDI deployment failure")) {
+                    if (message.startsWith("CDI deployment failure") || message.contains("org.jboss.weld.exceptions.DeploymentException")) {
                         throw new DeploymentException("Deployment failed. " + this + " returned " + responseCode);
+                    } else if (message.startsWith("CDI definition failure")) {
+                        throw new DefinitionException("Deployment failed. " + this + " returned " + responseCode);
                     }
                 }
                 throw new IllegalArgumentException("Deployment failed. " + this + " returned " + responseCode);
