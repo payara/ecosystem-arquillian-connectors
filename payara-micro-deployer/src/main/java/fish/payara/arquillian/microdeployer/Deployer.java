@@ -37,7 +37,6 @@
  *    only if the new code is made subject to such option by the copyright
  *    holder.
  */
-
 package fish.payara.arquillian.microdeployer;
 
 import fish.payara.micro.PayaraMicroRuntime;
@@ -64,43 +63,34 @@ import java.util.logging.*;
 @RequestScoped
 @Path("/application")
 public class Deployer {
+
     private static final Logger LOGGER = Logger.getLogger(Deployer.class.getName());
 
     @Inject
     PayaraMicroRuntime runtime;
-    
+
     String errorMessage = null;
 
     @Path("/{name}")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @PUT
     public JsonObject deploy(@PathParam("name") String name, InputStream archive) throws Throwable {
-        LOGGER.info("Starting deployment of "+name);
-        
+        LOGGER.log(Level.INFO, "Starting deployment of {0}", name);
+
         errorMessage = null;
         CaptureExceptionHandler handler = new CaptureExceptionHandler();
 
         Logger serverLogger = LogManager.getLogManager().getLogger("javax.enterprise.system.core");
-        if (serverLogger != null) {
-            LOGGER.fine("Found server logger, adding handler");
-            serverLogger.addHandler(handler);
-        } else {
-            LOGGER.warning("Didn't find server logger, won't be able to detect information about deployment errors");
-        }
-        
+        handler.addToLogger(serverLogger);
+
         boolean deployOk = false;
         try {
             deployOk = runtime.deploy(name, archive);
         } finally {
-            if (serverLogger != null) {
-                LOGGER.fine("Removing handler from server logger");
-                serverLogger.removeHandler(handler);
-                errorMessage = handler.deploymentExceptionMessage;
-                LOGGER.fine("Error message: " + errorMessage);
-            }
+            handler.removeFromLogger(serverLogger);
+            errorMessage = handler.deploymentExceptionMessage;
         }
-                
-        
+
         if (!deployOk) {
             throw badRequest();
         }
@@ -109,16 +99,16 @@ public class Deployer {
         InstanceDescriptor instance = runtime.getLocalDescriptor();
 
         ApplicationDescriptor descriptor = instance.getDeployedApplications().stream().filter(a -> a.getName().equals(name))
-            .findFirst().orElseThrow(this::badRequest);
+                .findFirst().orElseThrow(this::badRequest);
 
         resultBuilder.add("name", name)
-            .add("httpPorts", Json.createArrayBuilder(instance.getHttpPorts()));
+                .add("httpPorts", Json.createArrayBuilder(instance.getHttpPorts()));
 
         descriptor.getModuleDescriptors().forEach(moduleDescriptor -> {
             JsonObjectBuilder moduleBuilder = Json.createObjectBuilder();
             moduleBuilder.add("type", moduleDescriptor.getType())
-                // createObjectBuilder should apparently accept Map<String,?> rather than Map<String,Object>.
-                // https://github.com/eclipse-ee4j/jsonp/issues/168
+                    // createObjectBuilder should apparently accept Map<String,?> rather than Map<String,Object>.
+                    // https://github.com/eclipse-ee4j/jsonp/issues/168
                 .add("servletMappings", Json.createObjectBuilder((Map)moduleDescriptor.getServletMappings()));
             resultBuilder.add(moduleDescriptor.getName(), moduleBuilder.build());
         });
@@ -139,27 +129,27 @@ public class Deployer {
             resultBuilder.add("message", message);
         }
         return new ClientErrorException(Response.status(Response.Status.BAD_REQUEST)
-            .entity(resultBuilder.build())
-            .build());
+                .entity(resultBuilder.build())
+                .build());
     }
 
     @Path("/{name}")
     @DELETE
     public void undeploy(@PathParam("name") String name) {
-        LOGGER.info("Starting undeployment of " + name);
+        LOGGER.log(Level.INFO, "Starting undeployment of {0}", name);
         runtime.undeploy(name);
     }
 
     private static class CaptureExceptionHandler extends Handler {
 
         String deploymentExceptionMessage;
-        
+
         @Override
         public void publish(LogRecord record) {
             if (record.getThrown() != null
                     && record.getThrown().getClass().getSimpleName().equals("DeploymentException")) {
-                LOGGER.info("DeploymentException detected");
                 deploymentExceptionMessage = record.getThrown().getMessage();
+                LOGGER.log(Level.FINEST, "DeploymentException detected, message: {0}", deploymentExceptionMessage);
             }
         }
 
@@ -169,6 +159,23 @@ public class Deployer {
 
         @Override
         public void close() throws SecurityException {
+        }
+
+        public void addToLogger(Logger serverLogger) throws SecurityException {
+            if (serverLogger != null) {
+                LOGGER.fine("Found server logger, adding handler");
+                serverLogger.addHandler(this);
+            } else {
+                LOGGER.warning("Didn't find server logger, won't be able to detect information about deployment errors");
+            }
+        }
+
+        public void removeFromLogger(Logger serverLogger) throws SecurityException {
+            if (serverLogger != null) {
+                LOGGER.fine("Removing handler from server logger");
+                serverLogger.removeHandler(this);
+                LOGGER.log(Level.FINER, "Error message: {0}", deploymentExceptionMessage);
+            }
         }
 
     }
