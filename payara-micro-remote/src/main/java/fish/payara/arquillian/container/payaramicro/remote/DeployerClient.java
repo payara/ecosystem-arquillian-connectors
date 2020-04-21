@@ -80,10 +80,12 @@ class DeployerClient {
                 JsonObject json = Json.createReader(httpConnection.getErrorStream()).readObject();
                 String message = json.getString("message", null);
                 if (message != null) {
-                    if (message.startsWith("CDI deployment failure") || message.contains("org.jboss.weld.exceptions.DeploymentException")) {
-                        throw new DeploymentException("Deployment failed. " + this + " returned " + responseCode);
-                    } else if (message.startsWith("CDI definition failure")) {
-                        throw new DefinitionException("Deployment failed. " + this + " returned " + responseCode);
+                    if (message.startsWith("CDI definition failure")) {
+                        throw new DefinitionException(composeMessageForException(responseCode, message));
+                    } else if (message.startsWith("CDI deployment failure") || message.contains("org.jboss.weld.exceptions.DeploymentException")) {
+                        throw new DeploymentException(composeMessageForException(responseCode, message));
+                    } else {
+                        throw new IllegalArgumentException(composeMessageForException(responseCode, message));
                     }
                 }
                 throw new IllegalArgumentException("Deployment failed. " + this + " returned " + responseCode);
@@ -92,6 +94,10 @@ class DeployerClient {
             httpConnection.disconnect();
         }
 
+    }
+
+    private String composeMessageForException(int responseCode, String message) {
+        return "Deployment failed. " + this + " returned " + responseCode + " with message: " + message;
     }
 
     private Map<String, String> parseOutput(InputStream inputStream) {
