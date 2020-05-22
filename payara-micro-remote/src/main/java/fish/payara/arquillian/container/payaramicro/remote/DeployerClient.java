@@ -37,25 +37,24 @@
  *    only if the new code is made subject to such option by the copyright
  *    holder.
  */
-
 package fish.payara.arquillian.container.payaramicro.remote;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonString;
-import javax.json.stream.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.DeploymentException;
 
 class DeployerClient {
+
     private int port;
     private String contextPath;
     private static final String ENDPOINT = "/application/";
@@ -74,15 +73,31 @@ class DeployerClient {
             httpConnection.setDoOutput(true);
             httpConnection.setDoInput(true);
             copy(archive, httpConnection.getOutputStream());
-            if (httpConnection.getResponseCode() == 200) {
+            int responseCode = httpConnection.getResponseCode();
+            if (responseCode == 200) {
                 return parseOutput(httpConnection.getInputStream());
             } else {
-                throw new IllegalArgumentException("Deployment failed. "+this+" returned "+httpConnection.getResponseCode());
+                JsonObject json = Json.createReader(httpConnection.getErrorStream()).readObject();
+                String message = json.getString("message", null);
+                if (message != null) {
+                    if (message.startsWith("CDI definition failure")) {
+                        throw new DefinitionException(composeMessageForException(responseCode, message));
+                    } else if (message.startsWith("CDI deployment failure") || message.contains("org.jboss.weld.exceptions.DeploymentException")) {
+                        throw new DeploymentException(composeMessageForException(responseCode, message));
+                    } else {
+                        throw new IllegalArgumentException(composeMessageForException(responseCode, message));
+                    }
+                }
+                throw new IllegalArgumentException("Deployment failed. " + this + " returned " + responseCode);
             }
         } finally {
             httpConnection.disconnect();
         }
 
+    }
+
+    private String composeMessageForException(int responseCode, String message) {
+        return "Deployment failed. " + this + " returned " + responseCode + " with message: " + message;
     }
 
     private Map<String, String> parseOutput(InputStream inputStream) {
@@ -126,4 +141,5 @@ class DeployerClient {
     public String toString() {
         return "Payara Micro Deployer at http://localhost:" + port + contextPath;
     }
+
 }
