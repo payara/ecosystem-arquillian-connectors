@@ -126,7 +126,7 @@
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-container-grizzly-client</artifactId>
-            <version>1.15</version>
+            <version>1.17</version>
         </dependency>
 
         <!-- JAX-RS client API dependencies -->
