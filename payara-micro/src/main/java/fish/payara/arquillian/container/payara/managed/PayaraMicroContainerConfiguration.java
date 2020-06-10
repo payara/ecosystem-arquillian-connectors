@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,6 +58,7 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
 
     private String microJar = getConfigurableVariable("payara.microJar", "MICRO_JAR", null);
     private PayaraVersion microVersion = null;
+    private boolean enterprise = false;
 
     private int startupTimeoutInSeconds = Integer.parseInt(getConfigurableVariable("payara.startupTimeoutInSeconds", "MICRO_STARTUP_TIMEOUT_IN_SECONDS", "180"));
 
@@ -205,6 +206,10 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
         this.extraMicroOptions = extraMicroOptions;
     }
 
+    public boolean isEnterprise() {
+        return this.enterprise;
+    }
+
     /**
      * Validates if current configuration is valid, that is if all required properties are set and
      * have correct values
@@ -227,6 +232,7 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
                                                                                  microProperties.getProperty("update_version"),
                                                                                  microProperties.getProperty("payara_version"),
                                                                                  microProperties.getProperty("payara_update_version"));
+            this.enterprise = microProperties.getProperty("product_name").contains("Enterprise");
             
         } catch (IOException e) {
             throw new IllegalArgumentException(
