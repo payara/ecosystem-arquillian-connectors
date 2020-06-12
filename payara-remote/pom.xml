@@ -65,7 +65,7 @@
     <parent>
         <groupId>fish.payara.arquillian</groupId>
         <artifactId>parent-payara-containers</artifactId>
-        <version>2.3</version>
+        <version>2.4-SNAPSHOT</version>
     </parent>
     
     <artifactId>arquillian-payara-server-remote</artifactId>
