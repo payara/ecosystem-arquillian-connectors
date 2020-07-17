@@ -63,7 +63,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>2.4-SNAPSHOT</version>
+    <version>2.3.1</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>
@@ -532,14 +532,14 @@
                 <repository>
                     <id>payara-enterprise</id>
                     <name>Payara Enterprise Nexus</name>
-                    <url>https://nexus.payara.fish/repository/payara-enterprise</url>
+                    <url>https://nexus.payara.fish/content/repositories/payara-enterprise/</url>
                 </repository>
             </distributionManagement>
             <repositories>
                 <repository>
                     <id>payara-enterprise</id>
                     <name>Payara Enterprise Nexus</name>
-                    <url>https://nexus.payara.fish/repository/payara-enterprise</url>
+                    <url>https://nexus.payara.fish/content/repositories/payara-enterprise/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
