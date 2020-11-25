@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -75,6 +75,7 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
 
     protected boolean adminHttps;
     private boolean authorisation;
+    private boolean ignoreCertificates;
     private String adminUser;
     private String adminPassword;
     private String target = ADMINSERVER;
@@ -234,6 +235,25 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * @return if SSL certificates are ignored
+     */
+    public boolean isIgnoreCertificates() {
+        return ignoreCertificates;
+    }
+
+    /**
+     * if this is set to true, SSL certificate correctness is ignored.
+     * This is useful for Docker images / TestContainers when certificates are
+     * not easily matched to internal generated ones and host names are also
+     * very hard, if not impossible to match
+     *
+     * @param ignoreCertificates boolean value
+     */
+    public void setIgnoreCertificates(boolean ignoreCertificates) {
+        this.ignoreCertificates = ignoreCertificates;
     }
 
     /**

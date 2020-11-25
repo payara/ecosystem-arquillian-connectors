@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -91,12 +91,19 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ContainerException;
 
 import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * @author Z.Paulovics
  */
 public class PayaraClientUtil {
-    
+
     private static final Logger log = Logger.getLogger(PayaraClientUtil.class.getName());
 
     /**
@@ -151,51 +158,51 @@ public class PayaraClientUtil {
     public List<Map<String, Object>> getInstancesList(String additionalResourceUrl) throws ContainerException {
 
         Map<String, Object> extraProperties = getExtraProperties(GETRequest(additionalResourceUrl));
-        
+
         if (extraProperties != null) {
             return getInstanceList(extraProperties);
         }
 
         return new ArrayList<>();
     }
-    
+
     public Map<String, String> getServerSystemProperties(String additionalResourceUrl) {
-        
+
         Map<String, String> systemProperties = new HashMap<>();
-        
+
         String message = getMessage(GETRequest(additionalResourceUrl));
         int systemPropertiesHeader = message.indexOf("List of System Properties for the Java Virtual Machine:");
         if (systemPropertiesHeader != -1) {
-            
+
             String systemMessage = message.substring(systemPropertiesHeader + "List of System Properties for the Java Virtual Machine:".length());
-            
+
             for (String line : systemMessage.split("(\\r\\n|\\r|\\n)")) {
                 if (line.contains("=")) {
                     String[] keyValue = line.split("=");
                     systemProperties.put(keyValue[0].trim(), keyValue[1].trim());
-                    
+
                 }
-                
+
             }
-            
+
         }
-        
+
         return systemProperties;
-        
+
     }
-    
+
     @SuppressWarnings("unchecked")
     public Map<String, Object> getExtraProperties(Map<String, Object> responseMap) {
         return (Map<String, Object>) responseMap.get("extraProperties");
     }
-    
+
     @SuppressWarnings("unchecked")
     public String getMessage(Map<String, Object> responseMap) {
         return (String) responseMap.get("message");
     }
-    
-    
-    
+
+
+
     @SuppressWarnings("unchecked")
     private List<Map<String, Object>> getInstanceList(Map<String, Object> resultExtraProperties) {
         return (List<Map<String, Object>>) resultExtraProperties.get("instanceList");
@@ -217,26 +224,55 @@ public class PayaraClientUtil {
      */
     @SafeVarargs
     private final Builder prepareClient(final String additionalResourceUrl, final Class<? extends Feature>... features) {
-        
-        Client client = ClientBuilder.newClient();
-        
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }};
+
+        // Install the all-trusting trust manager
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new SecureRandom());
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
+        }
+
+        ClientBuilder clientBuilder = ClientBuilder.newBuilder();
+        if (configuration.isIgnoreCertificates() && sslContext != null) {
+            clientBuilder.sslContext(sslContext).hostnameVerifier((hostname, session) -> true);
+        } else if (sslContext == null) {
+            log.warning("Unable to ignore SSL certificate information");
+        }
+        Client client = clientBuilder.build();
+
         if (configuration.isAuthorisation()) {
             client.register(basic(configuration.getAdminUser(), configuration.getAdminPassword())) ;
         }
-        
+
         client.register(new CsrfProtectionFilter());
-        
+
         for (Class<? extends Feature> feature : features) {
             client.register(feature);
         }
-        
+
         return client.target(adminBaseUrl + additionalResourceUrl)
                      .request(APPLICATION_XML_TYPE)
                      .header("X-GlassFish-3", "ignore");
     }
 
     private Map<String, Object> getResponseMap(Response response) {
-        
+
         Map<String, Object> responseMap = new HashMap<>();
         String message = "";
         final String xmlDoc = response.readEntity(String.class);
@@ -245,8 +281,8 @@ public class PayaraClientUtil {
         if (xmlDoc != null && !xmlDoc.isEmpty()) {
             responseMap = xmlToMap(xmlDoc);
 
-            message = 
-                "exit_code: " + responseMap.get("exit_code") + 
+            message =
+                "exit_code: " + responseMap.get("exit_code") +
                 ", message: " + responseMap.get("message");
         }
 
@@ -280,7 +316,7 @@ public class PayaraClientUtil {
      * Marshalling a Payara Mng API response XML document to a java Map object
      *
      * @param document the XMl document to be converted
-     *     
+     *
      *
      * @return map containing the XML doc representation in java map format
      */
@@ -291,12 +327,12 @@ public class PayaraClientUtil {
         }
 
         Map<String, Object> map = null;
-        
+
         XMLInputFactory factory = XMLInputFactory.newInstance();
         factory.setProperty(IS_VALIDATING, false);
-        
+
         try (InputStream input = new ByteArrayInputStream(document.trim().getBytes("UTF-8"))) {
-            
+
             XMLStreamReader stream = factory.createXMLStreamReader(input);
             while (stream.hasNext()) {
                 if (stream.next() == START_ELEMENT && "map".equals(stream.getLocalName())) {
@@ -360,7 +396,7 @@ public class PayaraClientUtil {
                 }
             } // end if
         } // end while
-        
+
         return entry;
     }
 
@@ -402,7 +438,7 @@ public class PayaraClientUtil {
                 }
             } // end if
         } // end while
-        
+
         return list;
     }
 }
