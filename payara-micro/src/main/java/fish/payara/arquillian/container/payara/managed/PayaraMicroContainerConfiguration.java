@@ -77,7 +77,7 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
     private String extraMicroOptions = getConfigurableVariable("payara.extraMicroOptions", "EXTRA_MICRO_OPTIONS", null);
 
     private boolean microOnClasspath;
-    
+
     private final String ZIP_ENTRY_FILE_DIR = "MICRO-INF/domain/branding/glassfish-version.properties";
 
     public String getMicroJar() {
@@ -210,6 +210,21 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
         return this.enterprise;
     }
 
+    // support common config system properties (even if dummy)
+    public String getAdminHost() {
+        return "localhost";
+    }
+
+    public void setAdminHost(String adminHost) {
+    }
+
+    public String getDomain() {
+        return "nonexistent";
+    }
+
+    public void setDomain(String domain) {
+    }
+
     /**
      * Validates if current configuration is valid, that is if all required properties are set and
      * have correct values
@@ -220,9 +235,9 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
         if (!getMicroJarFile().isFile()) {
             throw new IllegalArgumentException("Could not locate the Payara Micro Jar file " + getMicroJar());
         }
-        
+
         try (JarFile microJarFile = new JarFile(getMicroJarFile())) {
-            
+
             ZipEntry pomProperties = microJarFile.getEntry(ZIP_ENTRY_FILE_DIR);
 
             Properties microProperties = new Properties();
@@ -233,7 +248,7 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
                                                                                  microProperties.getProperty("payara_version"),
                                                                                  microProperties.getProperty("payara_update_version"));
             this.enterprise = microProperties.getProperty("product_name").contains("Enterprise");
-            
+
         } catch (IOException e) {
             throw new IllegalArgumentException(
                     "Unable to find Payara Micro Version. Please check the file is a valid Payara Micro Jar.", e);

@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -72,35 +72,23 @@ import static org.jboss.arquillian.container.spi.client.deployment.Validate.notN
  * @author Vineet Reynolds
  */
 public class PayaraManagedContainerConfiguration extends CommonPayaraConfiguration {
+    private final String PAYARA_HOME_PROPERTY = "payara.home";
 
-    private String glassFishHome = System.getenv("GLASSFISH_HOME");
+    private String payaraHome = System.getProperty(PAYARA_HOME_PROPERTY);
 
     private boolean outputToConsole = true;
-    private String domain;
-    private boolean debug;
     private boolean allowConnectingToRunningServer;
     private boolean enableH2;
 
     public String getGlassFishHome() {
-        return glassFishHome;
+        return payaraHome;
     }
 
     /**
      * @param glassFishHome The local GlassFish installation directory
      */
     public void setGlassFishHome(String glassFishHome) {
-        this.glassFishHome = glassFishHome;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    /**
-     * @param domain The GlassFish domain to use or the default domain if not specified
-     */
-    public void setDomain(String domain) {
-        this.domain = domain;
+        this.payaraHome = glassFishHome;
     }
 
     public boolean isOutputToConsole() {
@@ -113,17 +101,6 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
      */
     public void setOutputToConsole(boolean outputToConsole) {
         this.outputToConsole = outputToConsole;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    /**
-     * @param debug Flag to start the server in debug mode using standard GlassFish debug port
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
     }
 
     public File getAdminCliJar() {
@@ -162,8 +139,10 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
      * Validates if current configuration is valid, that is if all required properties are set and
      * have correct values
      */
+    @Override
     public void validate() throws ConfigurationException {
-        notNull(getGlassFishHome(), "The property glassFishHome must be specified or the GLASSFISH_HOME environment variable must be set");
+        notNull(getGlassFishHome(), String.format("The property glassFishHome must be specified or "
+                + "the %s environment variable must be set", PAYARA_HOME_PROPERTY));
         configurationDirectoryExists(getGlassFishHome() + "/glassfish", getGlassFishHome() + " is not a valid GlassFish installation");
 
         if (!getAdminCliJar().isFile()) {

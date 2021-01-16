@@ -221,10 +221,10 @@
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <environmentVariables>
+              <systemPropertyVariables>
                 <!-- Pass location of server installation to arquillian container -->
-                <GLASSFISH_HOME>${session.executionRootDirectory}/target/payara5</GLASSFISH_HOME>
-              </environmentVariables>
+                <payara.home>${session.executionRootDirectory}/target/payara5</payara.home>
+              </systemPropertyVariables>
             </configuration>
           </plugin>
         </plugins>

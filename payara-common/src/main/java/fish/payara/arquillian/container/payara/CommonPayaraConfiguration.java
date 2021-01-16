@@ -69,7 +69,6 @@ import org.jboss.arquillian.container.spi.client.deployment.Validate;
  * @author Vineet Reynolds
  */
 public class CommonPayaraConfiguration implements ContainerConfiguration {
-
     protected String adminHost = "localhost";
     protected int adminPort = 4848;
 
@@ -82,6 +81,8 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
     private String libraries;
     private String properties;
     private String type;
+    private String domain;
+    private boolean debug;
 
     public CommonPayaraConfiguration() {
         super();
@@ -254,6 +255,28 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
      */
     public void setIgnoreCertificates(boolean ignoreCertificates) {
         this.ignoreCertificates = ignoreCertificates;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     * @param domain The GlassFish domain to use or the default domain if not specified
+     */
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    /**
+     * @param debug Flag to start the server in debug mode using standard GlassFish debug port
+     */
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     /**

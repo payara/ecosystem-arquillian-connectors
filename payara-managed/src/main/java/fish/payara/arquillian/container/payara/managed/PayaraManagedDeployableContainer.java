@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -92,9 +92,8 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
         }
 
         this.configuration = configuration;
-        
         payaraServerControl = new PayaraServerControl(configuration);
-        payaraManager = new CommonPayaraManager<PayaraManagedContainerConfiguration>(configuration);
+        payaraManager = new CommonPayaraManager<>(configuration);
     }
 
     @Override
@@ -106,10 +105,10 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
                 payaraManager.start();
             } else {
                 throw new LifecycleException(
-                    "The server is already running! " + 
-                    "Managed containers do not support connecting to running server instances due to the " + 
-                    "possible harmful effect of connecting to the wrong server. Please stop server before running or " + 
-                    "change to another type of container.\n" + "To disable this check and allow Arquillian to connect to a running server, " + 
+                    "The server is already running! " +
+                    "Managed containers do not support connecting to running server instances due to the " +
+                    "possible harmful effect of connecting to the wrong server. Please stop server before running or " +
+                    "change to another type of container.\n" + "To disable this check and allow Arquillian to connect to a running server, " +
                     "set allowConnectingToRunningServer to true in the container configuration");
             }
         } else {

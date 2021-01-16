@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -84,8 +84,7 @@ public class PayaraDeployableContainer implements DeployableContainer<CommonPaya
         if (configuration == null) {
             throw new IllegalArgumentException("configuration must not be null");
         }
-        
-        payaraManager = new CommonPayaraManager<CommonPayaraConfiguration>(configuration);
+        payaraManager = new CommonPayaraManager<>(configuration);
     }
 
     public void start() throws LifecycleException {
