@@ -81,12 +81,6 @@
                     <artifactId>payara-micro-maven-plugin</artifactId>
                     <configuration>
                         <deployWar>true</deployWar>
-                        <commandLineOptions>
-                            <option>
-                                <key>--contextroot</key>
-                                <value>micro-deployer</value>
-                            </option>
-                        </commandLineOptions>
                     </configuration>
                 </plugin>
             </plugins>

@@ -46,7 +46,7 @@ import org.jboss.arquillian.container.spi.client.container.ContainerConfiguratio
 public class PayaraMicroRemoteContainerConfiguration implements ContainerConfiguration {
 
     private int httpPort = Integer.parseInt(getConfigurableVariable("payara.httpPort", "PAYARA_PORT", "8080"));
-    private String deployerContextPath = getConfigurableVariable("payara.deployerPath", "PAYARA_DEPLOYER_PATH", "/micro-deployer");
+    private String deployerContextPath = getConfigurableVariable("payara.deployerPath", "PAYARA_DEPLOYER_PATH", "/payara-micro-deployer");
 
     /**
      * Get HTTP port of running Payara Micro instance with payara-micro-deployer deployed on it.

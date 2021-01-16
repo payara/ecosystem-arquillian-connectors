@@ -369,10 +369,6 @@
                       <value>${project.build.directory}/dependency/payara-micro-deployer.war</value>
                     </option>
                     <option>
-                      <key>--contextRoot</key>
-                      <value>micro-deployer</value>
-                    </option>
-                    <option>
                       <key>--nocluster</key>
                     </option>
                     <option>
