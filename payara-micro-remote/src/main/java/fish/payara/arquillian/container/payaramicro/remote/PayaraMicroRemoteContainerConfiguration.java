@@ -39,11 +39,11 @@
  */
 package fish.payara.arquillian.container.payaramicro.remote;
 
+import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 import org.jboss.arquillian.container.spi.ConfigurationException;
-import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 
-public class PayaraMicroRemoteContainerConfiguration implements ContainerConfiguration {
+public class PayaraMicroRemoteContainerConfiguration extends CommonPayaraConfiguration {
 
     private int httpPort = Integer.parseInt(getConfigurableVariable("payara.httpPort", "PAYARA_PORT", "8080"));
     private String deployerContextPath = getConfigurableVariable("payara.deployerPath", "PAYARA_DEPLOYER_PATH", "/payara-micro-deployer");

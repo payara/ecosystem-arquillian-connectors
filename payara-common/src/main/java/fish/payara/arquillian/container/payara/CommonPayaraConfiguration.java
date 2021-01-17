@@ -82,7 +82,7 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
     private String properties;
     private String type;
     private String domain;
-    private boolean debug;
+    protected boolean debug;
 
     public CommonPayaraConfiguration() {
         super();

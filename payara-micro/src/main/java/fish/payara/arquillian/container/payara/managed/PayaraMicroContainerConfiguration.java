@@ -37,6 +37,7 @@
  */
 package fish.payara.arquillian.container.payara.managed;
 
+import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 import static org.jboss.arquillian.container.spi.client.deployment.Validate.notNull;
 
 import java.io.File;
@@ -49,12 +50,11 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import org.jboss.arquillian.container.spi.ConfigurationException;
-import org.jboss.arquillian.container.spi.client.container.ContainerConfiguration;
 
 import fish.payara.arquillian.container.payara.PayaraVersion;
 
 
-public class PayaraMicroContainerConfiguration implements ContainerConfiguration {
+public class PayaraMicroContainerConfiguration extends CommonPayaraConfiguration {
 
     private String microJar = getConfigurableVariable("payara.microJar", "MICRO_JAR", null);
     private PayaraVersion microVersion = null;
@@ -70,8 +70,6 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
 
     private boolean outputToConsole = Boolean.parseBoolean(getConfigurableVariable("payara.consoleOutput", "MICRO_CONSOLE_OUTPUT", "true"));
 
-    private boolean debug = Boolean.parseBoolean(getConfigurableVariable("payara.debug", "MICRO_DEBUG", "false"));
-
     private String cmdOptions = getConfigurableVariable("payara.cmdOptions", "MICRO_CMD_OPTIONS", null);
 
     private String extraMicroOptions = getConfigurableVariable("payara.extraMicroOptions", "EXTRA_MICRO_OPTIONS", null);
@@ -79,6 +77,11 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
     private boolean microOnClasspath;
 
     private final String ZIP_ENTRY_FILE_DIR = "MICRO-INF/domain/branding/glassfish-version.properties";
+
+    public PayaraMicroContainerConfiguration() {
+        debug = Boolean.parseBoolean(getConfigurableVariable("payara.debug", "MICRO_DEBUG", "false"));
+    }
+
 
     public String getMicroJar() {
         if (microJar == null) {
@@ -172,18 +175,6 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
         this.outputToConsole = outputToConsole;
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    /**
-     * @param debug Flag to start the server in debug mode. This will cause the <code>startupTimeoutInSeconds</code>
-     * to be set to -1 (infinite wait) and Micro to suspend on startup waiting for a debug connection to port 5006.
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
     public String getCmdOptions() {
         return cmdOptions;
     }
@@ -208,21 +199,6 @@ public class PayaraMicroContainerConfiguration implements ContainerConfiguration
 
     public boolean isEnterprise() {
         return this.enterprise;
-    }
-
-    // support common config system properties (even if dummy)
-    public String getAdminHost() {
-        return "localhost";
-    }
-
-    public void setAdminHost(String adminHost) {
-    }
-
-    public String getDomain() {
-        return "nonexistent";
-    }
-
-    public void setDomain(String domain) {
     }
 
     /**

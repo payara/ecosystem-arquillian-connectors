@@ -53,6 +53,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>fish.payara.arquillian</groupId>
+            <artifactId>payara-container-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-spi</artifactId>
         </dependency>
@@ -97,7 +102,7 @@
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
