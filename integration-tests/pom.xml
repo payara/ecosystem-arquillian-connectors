@@ -94,6 +94,7 @@
                     <filterProperties>
                         <payara.version>${version.payara}</payara.version>
                         <arquillian.version>${version.arquillian_core}</arquillian.version>
+                        <project.version>${project.version}</project.version>
                     </filterProperties>
                     <streamLogs>true</streamLogs>
                     <skipInvocation>${skipTests}</skipInvocation>
