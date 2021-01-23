@@ -80,8 +80,19 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
     private boolean allowConnectingToRunningServer;
     private boolean enableH2;
 
+    public String getPayaraHome() {
+        return payaraHome;
+    }
+
     public String getGlassFishHome() {
         return payaraHome;
+    }
+
+    /**
+     * @param payaraHome The local Payara installation directory
+     */
+    public void setPayaraHome(String payaraHome) {
+        this.payaraHome = payaraHome;
     }
 
     /**
@@ -104,7 +115,7 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
     }
 
     public File getAdminCliJar() {
-        return new File(getGlassFishHome() + "/glassfish/modules/admin-cli.jar");
+        return new File(getPayaraHome() + "/glassfish/modules/admin-cli.jar");
     }
 
     public boolean isAllowConnectingToRunningServer() {
@@ -141,16 +152,16 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
      */
     @Override
     public void validate() throws ConfigurationException {
-        notNull(getGlassFishHome(), String.format("The property glassFishHome must be specified or "
-                + "the %s environment variable must be set", PAYARA_HOME_PROPERTY));
-        configurationDirectoryExists(getGlassFishHome() + "/glassfish", getGlassFishHome() + " is not a valid GlassFish installation");
+        notNull(getPayaraHome(), String.format("The arquillian.xml property payaraHome / glassFishHome must be specified or "
+                + "the %s system property must be set", PAYARA_HOME_PROPERTY));
+        configurationDirectoryExists(getPayaraHome() + "/glassfish", getPayaraHome() + " is not a valid GlassFish installation");
 
         if (!getAdminCliJar().isFile()) {
-            throw new IllegalArgumentException("Could not locate admin-cli.jar module in Payara installation: " + getGlassFishHome());
+            throw new IllegalArgumentException("Could not locate admin-cli.jar module in Payara installation: " + getPayaraHome());
         }
 
         if (getDomain() != null) {
-            configurationDirectoryExists(getGlassFishHome() + "/glassfish/domains/" + getDomain(), "Invalid domain: " + getDomain());
+            configurationDirectoryExists(getPayaraHome() + "/glassfish/domains/" + getDomain(), "Invalid domain: " + getDomain());
         }
 
         super.validate();
