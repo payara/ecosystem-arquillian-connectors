@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -83,73 +83,74 @@ import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
  * @author Z.Paulovics
  */
 public class PayaraClientService implements PayaraClient {
-    
+
     private static final Logger log = Logger.getLogger(PayaraClientService.class.getName());
 
     private static final String WEBMODULE = "WebModule";
     private static final String SERVLET = "Servlet";
     private static final String RUNNING_STATUS = "RUNNING";
-    
-    
+    private static final String PAYARA_HOME_PROPERTY = "com.sun.aas.productRoot";
+
+
     /**
      * the REST resource path template to retrieve the version of the server
      */
     private static final String PAYARA_VERSION              = "/version";
-    
+
     /**
      * the REST resource path template to retrieve the list of server instances
      */
     private static final String INSTANCE_LIST               = "/list-instances";
-    
+
     /**
      * the REST resource path template to retrieve the list of applications
      */
     private static final String APPLICATION                 = "/applications/application";
     private static final String APPLICATION_RESOURCE        = "/applications/application/{name}";
-    
+
     private static final String APPLICATION_COMPONENTS      = "/applications/application/{application}/list-sub-components";
-    
+
     private static final String APPLICATION_SERVLETS        = "/applications/application/{application}/list-sub-components?appname={application}&id={module}&type=servlets";
-    
+
     private static final String CLUSTERED_SERVER_INSTANCES  = "/clusters/cluster";
-    
+
     private static final String MEMBER_SERVERS_RESOURCE     = "/clusters/cluster/{target}/server-ref";
-    
+
     /**
      * the REST resource path template for cluster attributes object
      */
     private static final String CLUSTER_RESOURCE            = "/clusters/cluster/{cluster}";
-    
+
     private static final String STANDALONE_SERVER_INSTANCES = "/servers/server";
-    
+
     /**
      * the REST resource path template for server attributes object
      */
     private static final String SERVER_RESOURCE             = "/servers/server/{server}";
-    
+
     private static final String SERVER_VM_REPORT             = "/servers/server/{server}/generate-jvm-report";
-    
+
     private static final String SERVER_PROPERTY             = "/servers/server/{server}/system-property/{system-property}";
-    
+
     /**
      *  the REST resource path template for the Servers instance http-listener object
      */
     private static final String HTTP_LISTENER_INS           = "/servers/server/{server}/system-property/{http-listener}";
-    
+
     private static final String NODE_RESOURCE               = "/nodes/node/{node}";
-    
+
     private static final String SYSTEM_PROPERTY             = "/configs/config/{config}/system-property/{system-property}";
-    
+
     private static final String VIRTUAL_SERVERS             = "/configs/config/{config}/http-service/list-virtual-servers?target={target}";
-    
+
     private static final String VIRTUAL_SERVER              = "/configs/config/{config}/http-service/virtual-server/{virtualServer}";
 
     private static final String LISTENER                    = "/configs/config/{config}/network-config/network-listeners/network-listener/{listener}";
-    
+
     private static final String PROTOCOL                    = "/configs/config/{config}/network-config/protocols/protocol/{protocol}";
-    
+
     private static final String SYSTEM_PROPERTY_REGEX = "\\$\\{(.*)\\}";
-    
+
     private String target = ADMINSERVER;
     private String adminBaseUrl;
     private String DASUrl;
@@ -171,9 +172,9 @@ public class PayaraClientService implements PayaraClient {
             .append(configuration.getAdminHost())
             .append(":")
             .append(configuration.getAdminPort());
-        
+
         DASUrl = adminUrlBuilder.toString();
-        
+
         adminBaseUrl = adminUrlBuilder.append("/management/domain").toString();
 
         // Start up the jersey client layer
@@ -186,7 +187,7 @@ public class PayaraClientService implements PayaraClient {
      * - Get the node addresses list associated with the target - Pull the server instances status
      * form mgm API - In case of cluster tries to fund an instance which has RUNNING status
      *
-     * 
+     *
      */
     public void startUp() throws PayaraClientException {
 
@@ -237,28 +238,28 @@ public class PayaraClientService implements PayaraClient {
             // In case of cluster, returns the first RUNNING instance (if any) from the list
             nodeAddress = runningInstanceFilter(nodeAddressList);
         }
-        
-        // Sets the location of the installed Payara / GlassFish server, if not already specified and 
+
+        // Sets the location of the installed Payara / GlassFish server, if not already specified and
         // if available.
-        if (System.getProperty("glassfishRemote_gfHome") == null) {
+        if (System.getProperty(PAYARA_HOME_PROPERTY) == null) {
             Map<String, String> systemProperties = getServerSystemProperties(target);
-            String gfHome = systemProperties.get("com.sun.aas.productRoot");
-            if (gfHome != null) {
-                System.setProperty("glassfishRemote_gfHome", gfHome);
+            String payaraHome = systemProperties.get(PAYARA_HOME_PROPERTY);
+            if (payaraHome != null) {
+                System.setProperty(PAYARA_HOME_PROPERTY, payaraHome);
             }
         }
-        
+
     }
 
     public Integer getPayaraVersion() {
-        
+
         Map<String, Object> extraProperties = clientUtil.getExtraProperties(clientUtil.GETRequest(PAYARA_VERSION));
         if (extraProperties != null) {
             Object versionNumberObj = extraProperties.get("version-number");
             if (versionNumberObj instanceof String) {
                 String version = (String) versionNumberObj;
                 StringTokenizer tokenizer = new StringTokenizer(version, ".");
-                
+
                 if (tokenizer.hasMoreElements()) {
                     try {
                         return Integer.valueOf(tokenizer.nextToken());
@@ -266,10 +267,10 @@ public class PayaraClientService implements PayaraClient {
                         log.info("Exception getting major version for: " + version);
                     }
                 }
-                
+
             }
         }
-        
+
         return null;
     }
 
@@ -299,7 +300,7 @@ public class PayaraClientService implements PayaraClient {
 
         if (nodeAddressList.size() == 1) {
             throw new PayaraClientException(
-                "The " + nodeAddressList.get(0).getServerName() + 
+                "The " + nodeAddressList.get(0).getServerName() +
                 " server-instance status is: " + instanceStatus);
         } else {
             throw new PayaraClientException(
@@ -325,7 +326,7 @@ public class PayaraClientService implements PayaraClient {
         name = registerDeployedName(name, deployedName);
         // Fetch the list of SubComponents of the application
         Map<String, Object> subComponentsResponse = getClientUtil().GETRequest(APPLICATION_COMPONENTS.replace("{application}", name));
-        
+
         @SuppressWarnings("unchecked")
         Map<String, String> subComponents = (Map<String, String>) subComponentsResponse.get("properties");
 
@@ -338,12 +339,12 @@ public class PayaraClientService implements PayaraClient {
         if (subComponents != null) {
             for (Entry<String, String> subComponent : subComponents.entrySet()) {
                 String componentName = subComponent.getKey().toString();
-                
+
                 if (WEBMODULE.equals(subComponent.getValue())) {
 
                     @SuppressWarnings("unchecked")
                     List<Map<String, Object>> children = (List<Map<String, Object>>) subComponentsResponse.get("children");
-                    
+
                     // Override the application contextRoot by the webmodule's contextRoot
                     contextRoot = resolveWebModuleContextRoot(componentName, children);
                     resolveWebModuleSubComponents(name, componentName, contextRoot, httpContext);
@@ -401,7 +402,7 @@ public class PayaraClientService implements PayaraClient {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -438,19 +439,19 @@ public class PayaraClientService implements PayaraClient {
 
     private String resolveWebModuleContextRoot(String componentName, List<Map<String, Object>> modules) {
         for (Map<String, Object> module : modules) {
-            
+
             @SuppressWarnings("unchecked")
             Map<String, String> moduleProperties = (Map<String, String>) module.get("properties");
-            
+
             if (moduleProperties != null && !moduleProperties.isEmpty()) {
                 String moduleInfo = moduleProperties.get("moduleInfo");
                 if (moduleInfo.startsWith(componentName)) {
-                    
+
                     // Get the webmodule's contextRoot
                     // The moduleInfo property has the format - moduleArchiveURI:moduleType:contextRoot
                     // The contextRoot is extracted, and removed of any prefixed slash.
                     String contextRoot = moduleInfo.split(":")[2];
-                    
+
                     return contextRoot.indexOf("/") > -1 ? contextRoot.substring(contextRoot.indexOf("/"))
                         : contextRoot;
                 }
@@ -458,7 +459,7 @@ public class PayaraClientService implements PayaraClient {
                 throw new PayaraClientException("Could not resolve the web-module contextRoot");
             }
         }
-        
+
         return null;
     }
 
@@ -472,20 +473,20 @@ public class PayaraClientService implements PayaraClient {
      * @param httpContext - httpContext to be updated
      */
     private void resolveWebModuleSubComponents(String name, String module, String context, HTTPContext httpContext) {
-        
+
         // Fetch the list of SubComponents of the application
 
-        Set<Entry<String, String>> subComponents = 
+        Set<Entry<String, String>> subComponents =
             getProperties(
                 clientUtil
                     .GETRequest(APPLICATION_SERVLETS.replace("{application}", getDeployedName(name)).replace("{module}", module))
             ).entrySet();
-        
+
         for (Entry<String, String> subComponent : subComponents) {
             httpContext.add(new Servlet(subComponent.getKey(), context));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private Map<String, String> getProperties(Map<String, Object> responseMap) {
         return (Map<String, String>) responseMap.get("properties");
@@ -517,8 +518,8 @@ public class PayaraClientService implements PayaraClient {
     protected Map<String, String> getServerSystemProperties(String server) {
         return clientUtil.getServerSystemProperties(SERVER_VM_REPORT.replace("{server}", server));
     }
-    
-    
+
+
     /**
      * Get the clusterAttributes map of a cluster
      *
@@ -554,10 +555,10 @@ public class PayaraClientService implements PayaraClient {
         if (nodeHost.equals("localhost")) {
             nodeHost = configuration.getAdminHost();
         }
-        
+
         return nodeHost;
     }
-    
+
 
     /**
      * Get the port number defined as a system property in a configuration.
@@ -575,7 +576,7 @@ public class PayaraClientService implements PayaraClient {
             clientUtil.getAttributes(SYSTEM_PROPERTY.replace("{config}", attributes.get("configRef")).replace("{system-property}", propertyName))
                       .get("value"));
     }
-    
+
 
     /**
      * Get the port number defined as a system property in a configuration, and
@@ -631,14 +632,14 @@ public class PayaraClientService implements PayaraClient {
      * server/cluster configuration
      */
     private List<String> getVirtualServers(Map<String, String> attributes) {
-        
+
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> virtualServers = (List<Map<String, Object>>)
             clientUtil.GETRequest(
                         VIRTUAL_SERVERS.replace("{config}", attributes.get("configRef"))
                                        .replace("{target}", attributes.get("name")))
                       .get("children");
-        
+
         List<String> virtualServerNames = new ArrayList<String>();
         for (Map<String, Object> virtualServer : virtualServers) {
             String virtualServerName = (String) virtualServer.get("message");
@@ -646,7 +647,7 @@ public class PayaraClientService implements PayaraClient {
                 virtualServerNames.add(virtualServerName);
             }
         }
-        
+
         return virtualServerNames;
     }
 
@@ -663,20 +664,20 @@ public class PayaraClientService implements PayaraClient {
      */
     private List<String> getNetworkListeners(Map<String, String> attributes, List<String> virtualServers) {
         List<String> networkListeners = new ArrayList<String>();
-        
+
         for (String virtualServer : virtualServers) {
-            String[] listeners = 
+            String[] listeners =
                 clientUtil.getAttributes(
                             VIRTUAL_SERVER.replace("{config}", attributes.get("configRef"))
                                           .replace("{virtualServer}", virtualServer))
                           .get("networkListeners")
                           .split(",");
-            
+
             for (String listener : listeners) {
                 networkListeners.add(listener.trim());
             }
         }
-        
+
         return networkListeners;
     }
 
@@ -696,22 +697,22 @@ public class PayaraClientService implements PayaraClient {
         for (String networkListener : networkListeners) {
             Map<String, String> listenerAttributes = clientUtil.getAttributes(LISTENER.replace("{config}", attributes.get("configRef"))
                                                                                       .replace("{listener}", networkListener));
-            
+
             if (!parseBoolean(listenerAttributes.get("enabled"))) {
                 continue;
             }
-            
+
             String port = listenerAttributes.get("port");
             String protocolName = listenerAttributes.get("protocol");
             boolean secureProtocol = isSecureProtocol(attributes, protocolName);
-            
+
             if (secure && secureProtocol) {
                 return port;
             } else if (!secure && !secureProtocol) {
                 return port;
             }
         }
-        
+
         return null;
     }
 
@@ -758,7 +759,7 @@ public class PayaraClientService implements PayaraClient {
                 return getServerSystemProperty(serverName, propertyName, getSystemProperty(attributes, propertyName));
             }
         }
-        
+
         return -1;
     }
 
@@ -956,7 +957,7 @@ public class PayaraClientService implements PayaraClient {
                 nodeHost = getHostAddress(serverAttributes);
 
                 int httpPort = getPortValue(clusterAttributes, serverName, httpPortNum);
-                
+
                 // A HTTPS listener might not exist in the cluster config.
                 // And Arquillian requires a HTTP port for now.
                 // So, we'll parse the HTTPS config conditionally.

@@ -45,7 +45,7 @@
     <parent>
         <groupId>fish.payara.arquillian</groupId>
         <artifactId>parent-payara-containers</artifactId>
-        <version>2.4-SNAPSHOT</version>
+        <version>@project.version@</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>fish.payara.arquillian.test</groupId>
@@ -221,10 +221,10 @@
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <environmentVariables>
+              <systemPropertyVariables>
                 <!-- Pass location of server installation to arquillian container -->
-                <GLASSFISH_HOME>${session.executionRootDirectory}/target/payara5</GLASSFISH_HOME>
-              </environmentVariables>
+                <payara.home>${session.executionRootDirectory}/target/payara5</payara.home>
+              </systemPropertyVariables>
             </configuration>
           </plugin>
         </plugins>
@@ -367,10 +367,6 @@
                     <option>
                       <key>--deploy</key>
                       <value>${project.build.directory}/dependency/payara-micro-deployer.war</value>
-                    </option>
-                    <option>
-                      <key>--contextRoot</key>
-                      <value>micro-deployer</value>
                     </option>
                     <option>
                       <key>--nocluster</key>

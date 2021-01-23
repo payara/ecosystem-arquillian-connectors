@@ -39,9 +39,7 @@
 ~    holder.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>parent-payara-containers</artifactId>
         <groupId>fish.payara.arquillian</groupId>
@@ -52,6 +50,11 @@
     <artifactId>payara-micro-remote</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>fish.payara.arquillian</groupId>
+            <artifactId>payara-container-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-spi</artifactId>
@@ -97,7 +100,7 @@
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
