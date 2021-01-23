@@ -84,22 +84,11 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
         return payaraHome;
     }
 
-    public String getGlassFishHome() {
-        return payaraHome;
-    }
-
     /**
      * @param payaraHome The local Payara installation directory
      */
     public void setPayaraHome(String payaraHome) {
         this.payaraHome = payaraHome;
-    }
-
-    /**
-     * @param glassFishHome The local GlassFish installation directory
-     */
-    public void setGlassFishHome(String glassFishHome) {
-        this.payaraHome = glassFishHome;
     }
 
     public boolean isOutputToConsole() {
@@ -152,7 +141,7 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
      */
     @Override
     public void validate() throws ConfigurationException {
-        notNull(getPayaraHome(), String.format("The arquillian.xml property payaraHome / glassFishHome must be specified or "
+        notNull(getPayaraHome(), String.format("The arquillian.xml property payaraHome must be specified or "
                 + "the %s system property must be set", PAYARA_HOME_PROPERTY));
         configurationDirectoryExists(getPayaraHome() + "/glassfish", getPayaraHome() + " is not a valid GlassFish installation");
 
