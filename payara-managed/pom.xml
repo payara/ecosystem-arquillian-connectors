@@ -179,7 +179,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <glassfish.home>${glassfish.home}</glassfish.home>
+                        <payara.home>${payara.home}</payara.home>
                         <enableH2>${enableH2}</enableH2>
                     </systemPropertyVariables>
                 </configuration>
