@@ -10,9 +10,9 @@
   </engine>
   -->
 
-  <container qualifier="glassfish" default="true">
+  <container qualifier="payara" default="true">
     <configuration>
-      <property name="glassFishHome">target/${glassfish.home}</property>
+      <property name="payaraHome">target/${payara.home}</property>
       <property name="adminHost">localhost</property>
       <property name="adminPort">4848</property>
       <property name="enableH2">${enableH2:true}</property>
@@ -20,9 +20,9 @@
     </configuration>
   </container>
 
-  <container qualifier="glassfish-auth">
+  <container qualifier="payara-auth">
     <configuration>
-      <property name="glassFishHome">target/${glassfish.home}</property>
+      <property name="payaraHome">target/${payara.home}</property>
       <property name="adminHost">localhost</property>
       <property name="adminPort">4848</property>
       <property name="adminUser">admin</property>

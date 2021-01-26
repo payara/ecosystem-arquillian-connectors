@@ -10,7 +10,7 @@
   </engine>
   -->
 
-  <container qualifier="glassfish" default="true">
+  <container qualifier="payara" default="true">
     <configuration>
       <property name="remoteServerAddress">localhost</property>
       <property name="remoteServerHttpPort">8080</property>
@@ -18,7 +18,7 @@
     </configuration>
   </container>
 
-  <container qualifier="glassfish-auth">
+  <container qualifier="payara-auth">
     <configuration>
       <property name="remoteServerAddress">localhost</property>
       <property name="remoteServerHttpPort">8080</property>
