@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -38,7 +38,7 @@
  *
  * This file incorporates work covered by the following copyright and
  * permission notice:
- * 
+ *
  * JBoss, Home of Professional Open Source
  * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
@@ -73,6 +73,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClient;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientException;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientService;
+import java.io.IOException;
 
 /**
  * A class to aid in deployment and undeployment of archives involving a GlassFish container.
@@ -90,11 +91,8 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
 
     private static final String DELETE_OPERATION = "__deleteoperation";
 
-    private C configuration;
-
-    private PayaraClient payaraClient;
-
-    private String deploymentName;
+    private final C configuration;
+    private final PayaraClient payaraClient;
 
     public CommonPayaraManager(C configuration) {
         this.configuration = configuration;
@@ -121,23 +119,21 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
 
         final ProtocolMetaData protocolMetaData = new ProtocolMetaData();
 
-        try {
-            InputStream deployment = archive.as(ZipExporter.class).exportAsInputStream();
-
+        try (InputStream deployment = archive.as(ZipExporter.class).exportAsInputStream()) {
             // Build up the POST form to send to Payara
             final FormDataMultiPart form = new FormDataMultiPart();
             form.bodyPart(new StreamDataBodyPart("id", deployment, archiveName));
 
-            deploymentName = createDeploymentName(archiveName);
+            String deploymentName = createDeploymentName(archiveName);
             addDeployFormFields(deploymentName, form);
 
             // Do Deploy the application on the remote Payara
             HTTPContext httpContext = payaraClient.doDeploy(deploymentName, form);
             protocolMetaData.addContext(httpContext);
-        } catch (PayaraClientException e) {
+        } catch (PayaraClientException | IOException e) {
             throw new DeploymentException("Could not deploy " + archiveName, e);
         }
-        
+
         return protocolMetaData;
     }
 
@@ -147,14 +143,14 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
             throw new IllegalArgumentException("archive must not be null");
         }
 
-        deploymentName = createDeploymentName(archive.getName());
-        
+        String deploymentName = createDeploymentName(archive.getName());
+
         try {
             // Build up the POST form to send to Payara
             FormDataMultiPart form = new FormDataMultiPart();
             form.field("target", configuration.getTarget(), TEXT_PLAIN_TYPE);
             form.field("operation", DELETE_OPERATION, TEXT_PLAIN_TYPE);
-            
+
             payaraClient.doUndeploy(deploymentName, form);
         } catch (PayaraClientException e) {
             throw new DeploymentException("Could not undeploy " + archive.getName(), e);
@@ -170,11 +166,11 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         if (correctedName.startsWith("/")) {
             correctedName = correctedName.substring(1);
         }
-        
-        if (correctedName.indexOf(".") != -1) {
+
+        if (correctedName.contains(".")) {
             correctedName = correctedName.substring(0, correctedName.lastIndexOf("."));
         }
-        
+
         return correctedName;
     }
 

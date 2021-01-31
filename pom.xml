@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) [2017-2020] Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
 
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -75,7 +75,7 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.6.0.Final</version.arquillian_core>
+        <version.arquillian_core>1.7.0.Alpha6</version.arquillian_core>
         <version.jersey>2.30.payara-p2</version.jersey>
         <version.javaee>8</version.javaee>
         <version.javaee.api>8.0.1</version.javaee.api>
@@ -88,6 +88,7 @@
         <version.maven.enforcer.plugin>3.0.0-M2</version.maven.enforcer.plugin>
 
         <version.java>1.8</version.java>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>

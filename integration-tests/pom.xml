@@ -95,7 +95,7 @@
                         <project.version>${project.version}</project.version>
                     </filterProperties>
                     <streamLogs>true</streamLogs>
-                    <skipInvocation>${skipTests}</skipInvocation>
+                    <skipInvocation>${skipITs}</skipInvocation>
                 </configuration>
                 <executions>
                     <execution>
