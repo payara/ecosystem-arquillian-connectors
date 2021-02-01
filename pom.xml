@@ -535,5 +535,18 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>skipTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <skipITs>true</skipITs>
+            </properties>
+        </profile>
     </profiles>
 </project>
