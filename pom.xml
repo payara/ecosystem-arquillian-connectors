@@ -235,7 +235,6 @@
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>${version.javaee.api}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -260,7 +259,6 @@
         <plugins>
             <!-- Configure the jar with the binaries. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${version.maven.jar.plugin}</version>
                 <configuration>
@@ -280,7 +278,6 @@
 
             <!-- Configure the jar with the sources. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${version.maven.source.plugin}</version>
                 <executions>
@@ -296,7 +293,6 @@
 
             <!-- Configure the jar with the javadoc. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${version.maven.javadoc.plugin}</version>
                 <configuration>
@@ -345,7 +341,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <executions>
@@ -374,7 +369,6 @@
             <plugins>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${version.maven.shade.plugin}</version>
                     <executions>
@@ -384,6 +378,7 @@
                                 <goal>shade</goal>
                             </goals>
                             <configuration>
+                                <createDependencyReducedPom>false</createDependencyReducedPom>
                                 <artifactSet>
                                     <includes>
                                         <include>org.glassfish:*</include>
@@ -398,10 +393,10 @@
 
                                         <include>com.fasterxml.jackson.core:*</include>
                                         <include>com.fasterxml.jackson.module:*</include>
-                                        <include>javax.json-api:*</include>
-                                        <include>javax.validation:*</include>
-                                        <include>javax.annotation:*</include>
-                                        <include>javax.ws.rs:*</include>
+                                        <include>org.glassfish:jakarta.json:*</include>
+                                        <include>jakarta.validation:jakarta.validation-api:*</include>
+                                        <include>jakarta.annotation:jakarta.annotation-api:*</include>
+                                        <include>jakarta.ws.rs:jakarta.ws.rs-api:*</include>
                                     </includes>
                                 </artifactSet>
                                 <transformers>
@@ -480,7 +475,6 @@
                 <plugins>
                     <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${version.maven.gpg.plugin}</version>
                         <configuration>
