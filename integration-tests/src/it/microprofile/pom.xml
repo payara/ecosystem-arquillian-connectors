@@ -362,6 +362,18 @@
                 </goals>
                 <configuration>
                   <daemon>true</daemon>
+                  <javaCommandLineOptions>
+                    <!--
+                    There is a bug in payara micro remote deployer where
+                    wrong class loader is used to perform injection,
+                    so the properties files from the apps are not read,
+                    thus force the value to be found here
+                    -->
+                    <option>
+                      <key>-Dinjected.value</key>
+                      <value>Injected value</value>
+                    </option>
+                  </javaCommandLineOptions>
                   <deployWar>false</deployWar>
                   <commandLineOptions>
                     <option>
