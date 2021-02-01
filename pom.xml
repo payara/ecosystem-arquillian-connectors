@@ -360,6 +360,9 @@
                                     <version>[${version.java},${version.maven.enforcer.java.limit})</version>
                                     <message>JDK8 only please</message>
                                 </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>3.6</version>
+                                </requireMavenVersion>
                             </rules>
                         </configuration>
                     </execution>
