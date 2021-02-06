@@ -80,7 +80,7 @@ public class EnviromentRemoteExtension implements RemoteLoadableExtension {
     }
 
     public static class EnvironmentSetter {
-        private static Lock lock = new ReentrantLock();
+        private static final Lock lock = new ReentrantLock();
 
         public static void setEnvironment(@Observes BeforeSuite before) {
             loadAndPerform(SYS_PROP_FILE, (k, v) -> System.setProperty(k.toString(), v.toString()));
@@ -92,7 +92,11 @@ public class EnviromentRemoteExtension implements RemoteLoadableExtension {
             }
         }
 
-        public static void unsetEnvironment(@Observes AfterSuite before) {
+        // unsetting the environment will make the next deployment fail due to no environment
+        // there is no way to set the environment before deploying the application, so the
+        // first deployment cannot rely on environment being set for Injections
+        // all other interation should work normally
+        public static void unsetEnvironment(/* @Observes */ AfterSuite before) {
             loadAndPerform(SYS_PROP_FILE, (k, v) -> System.clearProperty(k.toString()));
             lock.lock();
             try {

@@ -65,9 +65,7 @@ public class EnvironmentFilesAppender implements ApplicationArchiveProcessor {
             if (sysPropsURL != null) {
                 container.addAsResource(sysPropsURL, SYS_PROP_FILE);
             }
-            // the following should not be necessary, however @Before*** methods run on the client
-            // See https://github.com/arquillian/arquillian-core/issues/288
-            // set up environment on the client as well as the server
+            // for managed profiles
             EnviromentRemoteExtension.EnvironmentSetter.setEnvironment(null);
         }
     }
