@@ -160,6 +160,7 @@
         <module>payara-client-ee8</module>
         <module>payara-micro-deployer</module>
         <module>payara-micro-remote</module>
+        <module>environment-setup</module>
         <module>integration-tests</module>
     </modules>
 
