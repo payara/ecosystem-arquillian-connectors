@@ -218,7 +218,10 @@ public class PayaraMicroDeployableContainer implements DeployableContainer<Payar
 
             // Allow Ctrl-C to stop the test, then start Payara Micro
             registerShutdownHook();
-            payaraMicroProcess = new ProcessBuilder(cmd)
+            ProcessBuilder builder = new ProcessBuilder(cmd);
+            // force enviromnent inheritance - bug in the JDK?
+            builder.environment();
+            payaraMicroProcess = builder
                 .redirectErrorStream(true)
                 .start();
 

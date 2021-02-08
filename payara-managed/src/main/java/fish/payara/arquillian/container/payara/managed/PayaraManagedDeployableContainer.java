@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -102,7 +102,6 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
             if (configuration.isAllowConnectingToRunningServer()) {
                 // If we are allowed to connect to a running server, then do not issue the 'asadmin start-domain' command.
                 connectedToRunningServer = true;
-                payaraManager.start();
             } else {
                 throw new LifecycleException(
                     "The server is already running! " +
@@ -111,9 +110,6 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
                     "change to another type of container.\n" + "To disable this check and allow Arquillian to connect to a running server, " +
                     "set allowConnectingToRunningServer to true in the container configuration");
             }
-        } else {
-            payaraServerControl.start();
-            payaraManager.start();
         }
     }
 
@@ -131,6 +127,15 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
 
     @Override
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
+        try {
+            if (connectedToRunningServer || payaraManager.isDASRunning()) {
+            } else {
+                payaraServerControl.start();
+            }
+            payaraManager.start();
+        } catch (LifecycleException ex) {
+            throw new DeploymentException("Cannot start Payara", ex);
+        }
         return payaraManager.deploy(archive);
     }
 
