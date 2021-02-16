@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -188,9 +188,10 @@ class PayaraServerControl {
         }
 
         int result;
-
-        try (
-            CloseableProcess process = new CloseableProcess(new ProcessBuilder(cmd).redirectErrorStream(true).start());
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        // force inheriting environment - JDK bug?
+        processBuilder.environment();
+        try (CloseableProcess process = new CloseableProcess(processBuilder.redirectErrorStream(true).start());
             ConsoleReader consoleReader = new ConsoleReader(process, consumer)) {
 
             new Thread(consoleReader).start();

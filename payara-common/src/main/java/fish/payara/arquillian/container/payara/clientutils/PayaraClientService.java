@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -78,6 +78,8 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 
 import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * @author Z.Paulovics
@@ -151,16 +153,15 @@ public class PayaraClientService implements PayaraClient {
 
     private static final String SYSTEM_PROPERTY_REGEX = "\\$\\{(.*)\\}";
 
-    private String target = ADMINSERVER;
-    private String adminBaseUrl;
-    private String DASUrl;
-
-    private ServerStartegy serverInstance;
-    private PayaraClientUtil clientUtil;
-    private NodeAddress nodeAddress;
-    private Map<String,String> deploymentAliases = new HashMap<>();
-
+    private final String adminBaseUrl;
+    private final String DASUrl;
+    private final PayaraClientUtil clientUtil;
+    private final Map<String,String> deploymentAliases = new ConcurrentHashMap<>();
     private final CommonPayaraConfiguration configuration;
+
+    private String target = ADMINSERVER;
+    private ServerStartegy serverInstance;
+    private NodeAddress nodeAddress;
 
     // Payara client service constructor
     public PayaraClientService(CommonPayaraConfiguration configuration) {
@@ -189,10 +190,10 @@ public class PayaraClientService implements PayaraClient {
      *
      *
      */
+    @Override
     public void startUp() throws PayaraClientException {
 
         Map<String, String> standaloneServers = new HashMap<>();
-        Map<String, String> clusters = new HashMap<>();
 
         try {
             standaloneServers = getServersList();
@@ -215,7 +216,7 @@ public class PayaraClientService implements PayaraClient {
         } else {
 
             // The "target" shall be clustered instance(s)
-            clusters = getClustersList();
+             Map<String, String> clusters = getClustersList();
 
             if (clusters != null && clusters.containsKey(getTarget())) {
 
@@ -315,10 +316,12 @@ public class PayaraClientService implements PayaraClient {
      * @param name - name of the appliacation form - a form of MediaType.MULTIPART_FORM_DATA_TYPE
      * @return subComponents - a map of SubComponents of the application
      */
+    @Override
     public HTTPContext doDeploy(String name, FormDataMultiPart form) {
         // Deploy the application on the Payara server
-        Map<String, Object> deploymentResult = getClientUtil().POSTMultiPartRequest(APPLICATION, form);
+        Map<String, Object> deploymentResult = getClientUtil().POSTMultiPartRequest(name, APPLICATION, form);
 
+        @SuppressWarnings("unchecked")
         String deployedName = deploymentResult.containsKey("properties")
             ? ((Map<String,String>)deploymentResult.get("properties")).get("name")
             : null;
@@ -338,7 +341,7 @@ public class PayaraClientService implements PayaraClient {
 
         if (subComponents != null) {
             for (Entry<String, String> subComponent : subComponents.entrySet()) {
-                String componentName = subComponent.getKey().toString();
+                String componentName = subComponent.getKey();
 
                 if (WEBMODULE.equals(subComponent.getValue())) {
 
@@ -359,7 +362,8 @@ public class PayaraClientService implements PayaraClient {
 
     private String registerDeployedName(String name, String deployedName) {
         if (deployedName != null && !deployedName.equals(name)) {
-            log.info("Deployment "+name+" resulted in application with different name "+deployedName);
+            log.log(Level.INFO, "Deployment {0} resulted in application with different name {1}",
+                    new Object[]{ name, deployedName });
             deploymentAliases.put(name, deployedName);
             return deployedName;
         } else {
@@ -384,9 +388,10 @@ public class PayaraClientService implements PayaraClient {
      * @param form - form containing the data
      * @return resultMap
      */
+    @Override
     public Map<String, Object> doUndeploy(String name, FormDataMultiPart form) {
         name = unregisterDeployedName(name);
-        return getClientUtil().POSTMultiPartRequest(APPLICATION_RESOURCE.replace("{name}", name), form);
+        return getClientUtil().POSTMultiPartRequest(name, APPLICATION_RESOURCE.replace("{name}", name), form);
     }
 
     /**
@@ -452,7 +457,7 @@ public class PayaraClientService implements PayaraClient {
                     // The contextRoot is extracted, and removed of any prefixed slash.
                     String contextRoot = moduleInfo.split(":")[2];
 
-                    return contextRoot.indexOf("/") > -1 ? contextRoot.substring(contextRoot.indexOf("/"))
+                    return contextRoot.contains("/") ? contextRoot.substring(contextRoot.indexOf("/"))
                         : contextRoot;
                 }
             } else {
@@ -663,7 +668,7 @@ public class PayaraClientService implements PayaraClient {
      * @return The list of all listener names associated with the provided list of virtual servers
      */
     private List<String> getNetworkListeners(Map<String, String> attributes, List<String> virtualServers) {
-        List<String> networkListeners = new ArrayList<String>();
+        List<String> networkListeners = new ArrayList<>();
 
         for (String virtualServer : virtualServers) {
             String[] listeners =
@@ -803,7 +808,7 @@ public class PayaraClientService implements PayaraClient {
         /**
          * Address list of the node(s) on GlassFish Appserver
          */
-        private List<NodeAddress> nodes = new ArrayList<NodeAddress>();
+        private List<NodeAddress> nodes = new ArrayList<>();
 
         protected PayaraClientService glassFishClient;
 
@@ -842,22 +847,21 @@ public class PayaraClientService implements PayaraClient {
 
         @Override
         public List<NodeAddress> getNodeAddressList() {
-            String nodeHost = "localhost"; // default host
-            setNodes(new ArrayList<NodeAddress>());
+            setNodes(new ArrayList<>());
 
             // Getting the server attributes is happening too fast.  The admin server hasn't started yet.
             int count = 10;
             Map<String, String> serverAttributes = getServerAttributes(ADMINSERVER);
-            while (serverAttributes.size() == 0 && count-- > 0) {
+            while (serverAttributes.isEmpty() && count-- > 0) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ignore) {
                 }
                 serverAttributes = getServerAttributes(ADMINSERVER);
             }
 
             // Get the host address of the Admin Server
-            nodeHost = (String) getConfiguration().getAdminHost();
+            String nodeHost = getConfiguration().getAdminHost();
 
             // Get the virtual servers and the associated network listeners for the DAS.
             // We'll not verify if the listeners are bound to private IP
@@ -890,13 +894,12 @@ public class PayaraClientService implements PayaraClient {
 
         @Override
         public List<NodeAddress> getNodeAddressList() {
-            String nodeHost = "localhost"; // default host
-            setNodes(new ArrayList<NodeAddress>());
+            setNodes(new ArrayList<>());
 
             Map<String, String> serverAttributes = getServerAttributes(getTarget());
 
             // Get the host address of the Admin Server
-            nodeHost = getHostAddress(serverAttributes);
+            String nodeHost = getHostAddress(serverAttributes);
 
             // Get the virtual servers and the associated network listeners for the DAS.
             // We'll not verify if the listeners are bound to private IP addresses,
@@ -928,8 +931,7 @@ public class PayaraClientService implements PayaraClient {
 
         @Override
         public List<NodeAddress> getNodeAddressList() {
-            String nodeHost = "localhost"; // default host
-            setNodes(new ArrayList<NodeAddress>());
+            setNodes(new ArrayList<>());
             Map<String, String> serverAttributes;
 
             // Get the REST resource for the cluster attributes, to reference the config-ref later
@@ -954,7 +956,7 @@ public class PayaraClientService implements PayaraClient {
                 String serverName = serverInstance.getKey();
 
                 serverAttributes = getServerAttributes(serverName);
-                nodeHost = getHostAddress(serverAttributes);
+                String nodeHost = getHostAddress(serverAttributes);
 
                 int httpPort = getPortValue(clusterAttributes, serverName, httpPortNum);
 

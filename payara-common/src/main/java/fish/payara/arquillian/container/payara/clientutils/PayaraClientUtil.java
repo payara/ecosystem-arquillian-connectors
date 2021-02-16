@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -95,6 +95,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.logging.Level;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -151,7 +152,7 @@ public class PayaraClientUtil {
     }
 
     public Map<String, Object> GETRequest(String additionalResourceUrl) {
-        return getResponseMap(
+        return getResponseMap("<non-application-specific>",
                 prepareClient(additionalResourceUrl).get());
     }
 
@@ -208,8 +209,9 @@ public class PayaraClientUtil {
         return (List<Map<String, Object>>) resultExtraProperties.get("instanceList");
     }
 
-    public Map<String, Object> POSTMultiPartRequest(String additionalResourceUrl, FormDataMultiPart form) {
-        return getResponseMap(
+    public Map<String, Object> POSTMultiPartRequest(String name, String additionalResourceUrl,
+            FormDataMultiPart form) {
+        return getResponseMap(name,
                 prepareClient(additionalResourceUrl, MultiPartFeature.class)
                     .post(entity(form, form.getMediaType())));
     }
@@ -271,17 +273,17 @@ public class PayaraClientUtil {
                      .header("X-GlassFish-3", "ignore");
     }
 
-    private Map<String, Object> getResponseMap(Response response) {
+    private Map<String, Object> getResponseMap(String name, Response response) {
 
         Map<String, Object> responseMap = new HashMap<>();
-        String message = "";
+        String message = String.format("While Deploying Application: %s --", name);
         final String xmlDoc = response.readEntity(String.class);
 
         // Marshalling the XML format response to a java Map
         if (xmlDoc != null && !xmlDoc.isEmpty()) {
             responseMap = xmlToMap(xmlDoc);
 
-            message =
+            message +=
                 "exit_code: " + responseMap.get("exit_code") +
                 ", message: " + responseMap.get("message");
         }
@@ -294,12 +296,12 @@ public class PayaraClientUtil {
                 throw new PayaraClientException(message);
             } else if (WARNING.equals(responseMap.get("exit_code"))) {
                 // Warning is not a failure - some warnings in Payara are inevitable (i.e. persistence-related: ARQ-606)
-                log.warning("Deployment resulted in a warning: " + message);
+                log.log(Level.WARNING, "Deployment resulted in a warning: {0}", message);
             } else if (!SUCCESS.equals(responseMap.get("exit_code"))) {
                 // Response is not a warning nor success - it's surely a failure.
                 throw new PayaraClientException(message);
             }
-        } else if (status.getReasonPhrase() == "Not Found") {
+        } else if ("Not Found".equals(status.getReasonPhrase())) {
             // the REST resource can not be found (for optional resources it can be O.K.)
             message += " [status: " + status.getFamily() + " reason: " + status.getReasonPhrase() + "]";
             log.warning(message);
@@ -350,51 +352,60 @@ public class PayaraClientUtil {
     private Map<String, Object> resolveXmlMap(XMLStreamReader stream) throws XMLStreamException {
 
         boolean endMapFlag = false;
-        Map<String, Object> entry = new HashMap<String, Object>();
+        Map<String, Object> entry = new HashMap<>();
         String key = null;
         String elementName = null;
 
         while (!endMapFlag) {
-
             int currentEvent = stream.next();
-            if (currentEvent == START_ELEMENT) {
-
-                if ("entry".equals(stream.getLocalName())) {
-                    key = stream.getAttributeValue(null, "key");
-                    String value = stream.getAttributeValue(null, "value");
-                    if (value != null) {
-                        entry.put(key, value);
-                        key = null;
-                    }
-                } else if ("map".equals(stream.getLocalName())) {
-                    entry.put(key, resolveXmlMap(stream));
-                } else if ("list".equals(stream.getLocalName())) {
-                    entry.put(key, resolveXmlList(stream));
-                } else {
-                    elementName = stream.getLocalName();
-                }
-            } else if (currentEvent == END_ELEMENT) {
-
-                if ("map".equals(stream.getLocalName())) {
-                    endMapFlag = true;
-                }
-                elementName = null;
-            } else {
-
-                String document = stream.getText();
-                if (elementName != null) {
-                    if ("number".equals(elementName)) {
-                        if (document.contains(".")) {
-                            entry.put(key, parseDouble(document));
-                        } else {
-                            entry.put(key, parseLong(document));
+            switch (currentEvent) {
+                case START_ELEMENT:
+                    if (null == stream.getLocalName()) {
+                        elementName = stream.getLocalName();
+                    } else {
+                        switch (stream.getLocalName()) {
+                            case "entry":
+                                key = stream.getAttributeValue(null, "key");
+                                String value = stream.getAttributeValue(null, "value");
+                                if (value != null) {
+                                    entry.put(key, value);
+                                    key = null;
+                                }
+                                break;
+                            case "map":
+                                entry.put(key, resolveXmlMap(stream));
+                                break;
+                            case "list":
+                                entry.put(key, resolveXmlList(stream));
+                                break;
+                            default:
+                                elementName = stream.getLocalName();
+                                break;
                         }
-                    } else if ("string".equals(elementName)) {
-                        entry.put(key, document);
+                    }
+                    break;
+                case END_ELEMENT:
+                    if ("map".equals(stream.getLocalName())) {
+                        endMapFlag = true;
                     }
                     elementName = null;
-                }
-            } // end if
+                    break;
+                default:
+                    String document = stream.getText();
+                    if (elementName != null) {
+                        if ("number".equals(elementName)) {
+                            if (document.contains(".")) {
+                                entry.put(key, parseDouble(document));
+                            } else {
+                                entry.put(key, parseLong(document));
+                            }
+                        } else if ("string".equals(elementName)) {
+                            entry.put(key, document);
+                        }
+                        elementName = null;
+                    }
+                    break; // end if
+            }
         } // end while
 
         return entry;
@@ -409,34 +420,33 @@ public class PayaraClientUtil {
         while (!endListFlag) {
 
             int currentEvent = stream.next();
-            if (currentEvent == START_ELEMENT) {
-                if ("map".equals(stream.getLocalName())) {
-                    list.add(resolveXmlMap(stream));
-                } else {
-                    elementName = stream.getLocalName();
-                }
-            } else if (currentEvent == END_ELEMENT) {
-
-                if ("list".equals(stream.getLocalName())) {
-                    endListFlag = true;
-                }
-                elementName = null;
-            } else {
-
-                String document = stream.getText();
-                if (elementName != null) {
-                    if ("number".equals(elementName)) {
-                        if (document.contains(".")) {
-                            list.add(parseDouble(document));
-                        } else {
-                            list.add(parseLong(document));
+            switch (currentEvent) {
+                case START_ELEMENT:
+                    if ("map".equals(stream.getLocalName())) {
+                        list.add(resolveXmlMap(stream));
+                    } else {
+                        elementName = stream.getLocalName();
+                    }   break;
+                case END_ELEMENT:
+                    if ("list".equals(stream.getLocalName())) {
+                        endListFlag = true;
+                    }   elementName = null;
+                    break;
+                default:
+                    String document = stream.getText();
+                    if (elementName != null) {
+                        if ("number".equals(elementName)) {
+                            if (document.contains(".")) {
+                                list.add(parseDouble(document));
+                            } else {
+                                list.add(parseLong(document));
+                            }
+                        } else if ("string".equals(elementName)) {
+                            list.add(document);
                         }
-                    } else if ("string".equals(elementName)) {
-                        list.add(document);
-                    }
-                    elementName = null;
-                }
-            } // end if
+                        elementName = null;
+                    }   break; // end if
+            }
         } // end while
 
         return list;

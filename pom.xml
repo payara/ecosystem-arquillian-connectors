@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) [2017-2020] Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
 
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -75,8 +75,8 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.6.0.Final</version.arquillian_core>
-        <version.jersey>2.30.payara-p2</version.jersey>
+        <version.arquillian_core>1.7.0.Alpha7</version.arquillian_core>
+        <version.jersey>2.30.payara-p4</version.jersey>
         <version.javaee>8</version.javaee>
         <version.javaee.api>8.0.1</version.javaee.api>
         <version.maven.surefire.plugin>3.0.0-M5</version.maven.surefire.plugin>
@@ -86,8 +86,10 @@
         <version.maven.javadoc.plugin>3.2.0</version.maven.javadoc.plugin>
         <version.maven.shade.plugin>3.2.4</version.maven.shade.plugin>
         <version.maven.enforcer.plugin>3.0.0-M2</version.maven.enforcer.plugin>
+        <version.maven.deploy.plugin>3.0.0-M1</version.maven.deploy.plugin>
 
         <version.java>1.8</version.java>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
@@ -158,6 +160,7 @@
         <module>payara-client-ee8</module>
         <module>payara-micro-deployer</module>
         <module>payara-micro-remote</module>
+        <module>environment-setup</module>
         <module>integration-tests</module>
     </modules>
 
@@ -233,7 +236,6 @@
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>${version.javaee.api}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -256,13 +258,12 @@
 
     <build>
         <plugins>
-
             <!-- Configure the jar with the binaries. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${version.maven.jar.plugin}</version>
                 <configuration>
+                    <forceCreation>true</forceCreation>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -278,12 +279,12 @@
 
             <!-- Configure the jar with the sources. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${version.maven.source.plugin}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
@@ -293,7 +294,6 @@
 
             <!-- Configure the jar with the javadoc. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${version.maven.javadoc.plugin}</version>
                 <configuration>
@@ -308,8 +308,25 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${version.maven.deploy.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <goals>
+                            <goal>deploy</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -325,7 +342,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M3</version>
                 <executions>
@@ -340,6 +356,9 @@
                                     <version>[${version.java},${version.maven.enforcer.java.limit})</version>
                                     <message>JDK8 only please</message>
                                 </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>3.6</version>
+                                </requireMavenVersion>
                             </rules>
                         </configuration>
                     </execution>
@@ -351,7 +370,6 @@
             <plugins>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${version.maven.shade.plugin}</version>
                     <executions>
@@ -361,6 +379,7 @@
                                 <goal>shade</goal>
                             </goals>
                             <configuration>
+                                <createDependencyReducedPom>false</createDependencyReducedPom>
                                 <artifactSet>
                                     <includes>
                                         <include>org.glassfish:*</include>
@@ -375,10 +394,10 @@
 
                                         <include>com.fasterxml.jackson.core:*</include>
                                         <include>com.fasterxml.jackson.module:*</include>
-                                        <include>javax.json-api:*</include>
-                                        <include>javax.validation:*</include>
-                                        <include>javax.annotation:*</include>
-                                        <include>javax.ws.rs:*</include>
+                                        <include>org.glassfish:jakarta.json:*</include>
+                                        <include>jakarta.validation:jakarta.validation-api:*</include>
+                                        <include>jakarta.annotation:jakarta.annotation-api:*</include>
+                                        <include>jakarta.ws.rs:jakarta.ws.rs-api:*</include>
                                     </includes>
                                 </artifactSet>
                                 <transformers>
@@ -457,7 +476,6 @@
                 <plugins>
                     <!-- Signing with GPG is a requirement for a release deployment to Maven central. -->
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${version.maven.gpg.plugin}</version>
                         <configuration>
@@ -533,6 +551,19 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>skipTests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+                <skipITs>true</skipITs>
+            </properties>
         </profile>
     </profiles>
 </project>

@@ -80,7 +80,7 @@
     </developers>
   
     <properties>
-        <version.jersey>2.30.payara-p2</version.jersey>
+        <version.jersey>2.30.payara-p4</version.jersey>
         <gpg.keyname>Payara-CI</gpg.keyname>
     </properties>
     <build>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>2.0.1</version>
+            <version>1.0.8</version>
         </dependency>
 
         <!-- WebSocket client dependencies -->

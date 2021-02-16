@@ -207,7 +207,7 @@ public class PayaraMicroContainerConfiguration extends CommonPayaraConfiguration
      */
     @Override
     public void validate() throws ConfigurationException {
-        notNull(getMicroJar(), "The property microJar must be specified or the MICRO_JAR environment variable must be set");
+        notNull(getMicroJar(), "The property payara.microJar must be specified or the MICRO_JAR environment variable must be set");
         if (!getMicroJarFile().isFile()) {
             throw new IllegalArgumentException("Could not locate the Payara Micro Jar file " + getMicroJar());
         }
