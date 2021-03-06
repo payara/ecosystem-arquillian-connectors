@@ -74,6 +74,10 @@ import fish.payara.arquillian.container.payara.clientutils.PayaraClient;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientException;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientService;
 import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
 /**
  * A class to aid in deployment and undeployment of archives involving a GlassFish container.
@@ -90,9 +94,20 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
     private static final Logger log = Logger.getLogger(CommonPayaraManager.class.getName());
 
     private static final String DELETE_OPERATION = "__deleteoperation";
+    private static final Lock deployLock;
+    private static final boolean prependRandomToDeploymentName;
 
     private final C configuration;
     private final PayaraClient payaraClient;
+    private final Random random = new Random();
+
+    static {
+        prependRandomToDeploymentName = Boolean.getBoolean("fish.payara.arquillian.prependRandom");
+        deployLock = Boolean.getBoolean("fish.payara.arquillian.deployLock") ? new ReentrantLock() : new NoOpLock();
+        if (deployLock instanceof ReentrantLock) {
+            log.info("Serializing Deployments and Undeployments (fish.payara.arquillian.deployLock)");
+        }
+    }
 
     public CommonPayaraManager(C configuration) {
         this.configuration = configuration;
@@ -116,6 +131,10 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         }
 
         final String archiveName = archive.getName();
+        final String deploymentName = createDeploymentName(prependRandomToDeploymentName ?
+                String.format("r%d-%s", random.nextInt(1000), archiveName) : archiveName);
+
+        log.log(Level.INFO, "Deploying {0}", new Object[] { deploymentName });
 
         final ProtocolMetaData protocolMetaData = new ProtocolMetaData();
 
@@ -124,11 +143,16 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
             final FormDataMultiPart form = new FormDataMultiPart();
             form.bodyPart(new StreamDataBodyPart("id", deployment, archiveName));
 
-            String deploymentName = createDeploymentName(archiveName);
             addDeployFormFields(deploymentName, form);
 
             // Do Deploy the application on the remote Payara
-            HTTPContext httpContext = payaraClient.doDeploy(deploymentName, form);
+            HTTPContext httpContext;
+            deployLock.lock();
+            try {
+                httpContext = payaraClient.doDeploy(createDeploymentName(archiveName), form);
+            } finally {
+                deployLock.unlock();
+            }
             protocolMetaData.addContext(httpContext);
         } catch (PayaraClientException | IOException e) {
             throw new DeploymentException("Could not deploy " + archiveName, e);
@@ -151,7 +175,12 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
             form.field("target", configuration.getTarget(), TEXT_PLAIN_TYPE);
             form.field("operation", DELETE_OPERATION, TEXT_PLAIN_TYPE);
 
-            payaraClient.doUndeploy(deploymentName, form);
+            deployLock.lock();
+            try {
+                payaraClient.doUndeploy(deploymentName, form);
+            } finally {
+                deployLock.unlock();
+            }
         } catch (PayaraClientException e) {
             throw new DeploymentException("Could not undeploy " + archive.getName(), e);
         }
