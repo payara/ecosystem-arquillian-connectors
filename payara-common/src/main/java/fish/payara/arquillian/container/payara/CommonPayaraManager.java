@@ -74,7 +74,7 @@ import fish.payara.arquillian.container.payara.clientutils.PayaraClient;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientException;
 import fish.payara.arquillian.container.payara.clientutils.PayaraClientService;
 import java.io.IOException;
-import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -95,14 +95,14 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
 
     private static final String DELETE_OPERATION = "__deleteoperation";
     private static final Lock deployLock;
-    private static final boolean prependRandomToDeploymentName;
+    private static final boolean prependDeploySequence;
 
     private final C configuration;
     private final PayaraClient payaraClient;
-    private final Random random = new Random();
+    private final AtomicInteger deploySequence = new AtomicInteger();
 
     static {
-        prependRandomToDeploymentName = Boolean.getBoolean("fish.payara.arquillian.prependRandom");
+        prependDeploySequence = Boolean.getBoolean("fish.payara.arquillian.prependDeploySequence");
         deployLock = Boolean.getBoolean("fish.payara.arquillian.deployLock") ? new ReentrantLock() : new NoOpLock();
         if (deployLock instanceof ReentrantLock) {
             log.info("Serializing Deployments and Undeployments (fish.payara.arquillian.deployLock)");
@@ -131,8 +131,8 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         }
 
         final String archiveName = archive.getName();
-        final String deploymentName = createDeploymentName(prependRandomToDeploymentName ?
-                String.format("r%d-%s", random.nextInt(1000), archiveName) : archiveName);
+        final String deploymentName = createDeploymentName(prependDeploySequence ?
+                String.format("r%d-%s", deploySequence.incrementAndGet(), archiveName) : archiveName);
 
         log.log(Level.INFO, "Deploying {0}", new Object[] { deploymentName });
 
