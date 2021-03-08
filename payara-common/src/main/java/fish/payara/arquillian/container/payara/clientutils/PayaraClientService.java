@@ -391,7 +391,7 @@ public class PayaraClientService implements PayaraClient {
     @Override
     public Map<String, Object> doUndeploy(String name, FormDataMultiPart form) {
         name = unregisterDeployedName(name);
-        log.log(Level.INFO, "Undeploying {0}", new Object[] { name });
+        log.log(Level.FINE, "Undeploying {0}", new Object[] { name });
         return getClientUtil().POSTMultiPartRequest(name, APPLICATION_RESOURCE.replace("{name}", name), form);
     }
 

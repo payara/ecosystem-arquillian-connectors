@@ -134,7 +134,7 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         final String deploymentName = createDeploymentName(prependDeploySequence ?
                 String.format("r%d-%s", deploySequence.incrementAndGet(), archiveName) : archiveName);
 
-        log.log(Level.INFO, "Deploying {0}", new Object[] { deploymentName });
+        log.log(Level.FINE, "Deploying {0}", new Object[] { deploymentName });
 
         final ProtocolMetaData protocolMetaData = new ProtocolMetaData();
 
