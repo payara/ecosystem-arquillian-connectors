@@ -99,7 +99,7 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
 
     private final C configuration;
     private final PayaraClient payaraClient;
-    private final AtomicInteger deploySequence = new AtomicInteger();
+    private static final AtomicInteger deploySequence = new AtomicInteger();
 
     static {
         prependDeploySequence = Boolean.getBoolean("fish.payara.arquillian.prependDeploySequence");
