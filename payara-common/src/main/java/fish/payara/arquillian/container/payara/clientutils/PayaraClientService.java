@@ -362,7 +362,7 @@ public class PayaraClientService implements PayaraClient {
 
     private String registerDeployedName(String name, String deployedName) {
         if (deployedName != null && !deployedName.equals(name)) {
-            log.log(Level.INFO, "Deployment {0} resulted in application with different name {1}",
+            log.log(Level.FINE, "Deployment {0} resulted in application with different name {1}",
                     new Object[]{ name, deployedName });
             deploymentAliases.put(name, deployedName);
             return deployedName;
