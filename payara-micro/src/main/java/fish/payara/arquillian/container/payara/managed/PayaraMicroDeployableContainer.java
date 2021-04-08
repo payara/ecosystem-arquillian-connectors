@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -267,7 +267,7 @@ public class PayaraMicroDeployableContainer implements DeployableContainer<Payar
 
                     // Get the host and port that the application started on.
                     String host = instanceConfigMatcher.group("host").trim();
-                    String[] ports = instanceConfigMatcher.group("ports").trim().split(" ");
+                    String[] ports = instanceConfigMatcher.group("ports").trim().split(", ");
                     int firstPort = Integer.parseInt(ports[0].trim());
                     logger.info("Payara Micro running on host: " + host + " port: " + firstPort);
 
