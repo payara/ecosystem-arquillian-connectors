@@ -95,7 +95,7 @@
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
         <docs.phase>deploy</docs.phase>
 
-        <version.payara>5.2020.7</version.payara>
+        <version.payara>5.2021.2</version.payara>
         <payara.home>payara5</payara.home>
 
         <gpg.keyname>Payara-CI</gpg.keyname>
