@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -60,7 +60,7 @@ import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 import static org.jboss.shrinkwrap.api.asset.EmptyAsset.INSTANCE;
 import static org.junit.Assert.assertNotNull;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

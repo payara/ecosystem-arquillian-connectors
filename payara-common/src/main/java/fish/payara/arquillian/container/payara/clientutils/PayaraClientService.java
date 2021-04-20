@@ -71,7 +71,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
-import javax.ws.rs.ProcessingException;
+import jakarta.ws.rs.ProcessingException;
 
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
