@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -59,7 +59,7 @@ package fish.payara.arquillian.container.payara.managed;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Test;
 
-import javax.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.WebServlet;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;

@@ -1,7 +1,7 @@
 /*
  *    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- *    Copyright (c) [2019] Payara Foundation and/or its affiliates. All rights reserved.
+ *    Copyright (c) [2019-2021] Payara Foundation and/or its affiliates. All rights reserved.
  *
  *    The contents of this file are subject to the terms of either the GNU
  *    General Public License Version 2 only ("GPL") or the Common Development
@@ -39,9 +39,9 @@
  */
 package fish.payara.arquillian.container.payaramicro.remote;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonString;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,8 +50,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DefinitionException;
+import jakarta.enterprise.inject.spi.DeploymentException;
 
 class DeployerClient {
 
