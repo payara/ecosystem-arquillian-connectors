@@ -99,6 +99,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
 import com.sun.enterprise.web.WebModule;
+import java.util.logging.Level;
 
 /**
  *
@@ -129,7 +130,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
+        return new ProtocolDescription("Servlet 5.0");
     }
 
     @Override
@@ -334,7 +335,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
                 throw result.getFailureCause();
             case SUCCESS:
                 output = result.getOutput();
-                log.info("command " + command + " parameters" + parameterList + " result: " + output);
+                log.log(Level.INFO, "command {0} parameters{1} result: {2}", new Object[]{command, parameterList, output});
                 break;
         }
         return output;
