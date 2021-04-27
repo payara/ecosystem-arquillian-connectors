@@ -97,7 +97,7 @@
         <docs.phase>deploy</docs.phase>
 
         <version.payara>6.2021.1.Alpha1</version.payara>
-        <payara.home>payara5</payara.home>
+        <payara.home>payara6</payara.home>
 
         <gpg.keyname>Payara-CI</gpg.keyname>
     </properties>
