@@ -76,9 +76,9 @@
 
     <properties>
         <version.arquillian_core>1.7.0.Alpha9</version.arquillian_core>
-        <version.jersey>2.30.payara-p4</version.jersey>
-        <version.javaee>8</version.javaee>
-        <version.javaee.api>8.0.1</version.javaee.api>
+        <version.jersey>3.0.1</version.jersey>
+        <version.jakartaee>9</version.jakartaee>
+        <version.jakartaee.api>9.1.0-RC1</version.jakartaee.api>
         <version.maven.surefire.plugin>3.0.0-M5</version.maven.surefire.plugin>
         <version.maven.source.plugin>3.2.1</version.maven.source.plugin>
         <version.maven.jar.plugin>3.2.0</version.maven.jar.plugin>
@@ -95,8 +95,8 @@
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
         <docs.phase>deploy</docs.phase>
 
-        <version.payara>5.2020.7</version.payara>
-        <payara.home>payara5</payara.home>
+        <version.payara>6.2021.1-SNAPSHOT</version.payara>
+        <payara.home>payara6</payara.home>
 
         <gpg.keyname>Payara-CI</gpg.keyname>
     </properties>
@@ -159,6 +159,7 @@
         <module>payara-micro</module>
         <module>payara-client-ee7</module>
         <module>payara-client-ee8</module>
+        <module>payara-client-ee9</module>
         <module>payara-micro-deployer</module>
         <module>payara-micro-remote</module>
         <module>environment-setup</module>
@@ -234,9 +235,9 @@
             </dependency>
 
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${version.javaee.api}</version>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${version.jakartaee.api}</version>
             </dependency>
 
             <dependency>
@@ -303,7 +304,7 @@
                     <splitindex>true</splitindex>
                     <doctitle>Arquillian connector</doctitle>
                     <links>
-                        <link>https://docs.oracle.com/javaee/${version.javaee}/api/</link>
+                        <link>https://docs.oracle.com/javaee/${version.jakartaee}/api/</link>
                     </links>
                 </configuration>
                 <executions>
@@ -441,26 +442,26 @@
                                         <shadedPattern>fish.payara.arquillian.aopalliance</shadedPattern>
                                     </relocation>
 
-                                    <relocation>
-                                        <pattern>javax.json</pattern>
-                                        <shadedPattern>fish.payara.arquillian.javax.json</shadedPattern>
+<!--                                    <relocation>
+                                        <pattern>jakarta.json</pattern>
+                                        <shadedPattern>fish.payara.arquillian.jakarta.json</shadedPattern>
                                     </relocation>
                                     <relocation>
-                                        <pattern>javax.validation</pattern>
+                                        <pattern>jakarta.validation</pattern>
                                         <shadedPattern>fish.payara.arquillian.validation</shadedPattern>
                                     </relocation>
                                     <relocation>
-                                        <pattern>javax.annotation</pattern>
+                                        <pattern>jakarta.annotation</pattern>
                                         <shadedPattern>fish.payara.arquillian.annotation</shadedPattern>
                                     </relocation>
                                     <relocation>
-                                        <pattern>javax.ws</pattern>
+                                        <pattern>jakarta.ws</pattern>
                                         <shadedPattern>fish.payara.arquillian.ws</shadedPattern>
                                     </relocation>
                                     <relocation>
-                                        <pattern>javax.inject</pattern>
+                                        <pattern>jakarta.inject</pattern>
                                         <shadedPattern>fish.payara.arquillian.inject</shadedPattern>
-                                    </relocation>
+                                    </relocation>-->
                                 </relocations>
                             </configuration>
                         </execution>

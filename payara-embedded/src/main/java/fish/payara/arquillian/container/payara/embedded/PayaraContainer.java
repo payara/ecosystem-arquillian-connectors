@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -72,7 +72,7 @@ import java.util.regex.Pattern;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration;
 
 import org.apache.catalina.Container;
 import org.glassfish.embeddable.BootstrapProperties;
@@ -99,6 +99,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
 import com.sun.enterprise.web.WebModule;
+import java.util.logging.Level;
 
 /**
  *
@@ -129,7 +130,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
+        return new ProtocolDescription("Servlet 5.0");
     }
 
     @Override
@@ -334,7 +335,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
                 throw result.getFailureCause();
             case SUCCESS:
                 output = result.getOutput();
-                log.info("command " + command + " parameters" + parameterList + " result: " + output);
+                log.log(Level.INFO, "command {0} parameters{1} result: {2}", new Object[]{command, parameterList, output});
                 break;
         }
         return output;

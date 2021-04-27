@@ -122,7 +122,7 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
+        return new ProtocolDescription("Servlet 5.0");
     }
 
     @Override

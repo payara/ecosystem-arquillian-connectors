@@ -56,7 +56,7 @@
  */
 package fish.payara.arquillian.container.payara;
 
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 
 import java.io.InputStream;
 import java.util.logging.Logger;
