@@ -69,8 +69,8 @@ import org.jboss.arquillian.container.spi.client.deployment.Validate;
  * @author Vineet Reynolds
  */
 public class CommonPayaraConfiguration implements ContainerConfiguration {
-    protected String adminHost = "localhost";
-    protected int adminPort = 4848;
+    protected String adminHost = System.getProperty("adminHost", "localhost");
+    protected int adminPort = Integer.parseInt(System.getProperty("adminPort", "4848"));
 
     protected boolean adminHttps;
     private boolean authorisation;
