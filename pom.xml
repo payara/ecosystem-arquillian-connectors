@@ -76,7 +76,7 @@
 
     <properties>
         <version.arquillian_core>1.7.0.Alpha9</version.arquillian_core>
-        <version.jersey>2.30.payara-p4</version.jersey>
+        <version.jersey>2.33</version.jersey>
         <version.javaee>8</version.javaee>
         <version.javaee.api>8.0.1</version.javaee.api>
         <version.maven.surefire.plugin>3.0.0-M5</version.maven.surefire.plugin>
