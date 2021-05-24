@@ -1,0 +1,40 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "03:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.glassfish.jersey.ext.microprofile:jersey-mp-rest-client
+    versions:
+    - "2.34"
+  - dependency-name: org.glassfish.jersey.media:jersey-media-json-jackson
+    versions:
+    - "2.34"
+  - dependency-name: org.glassfish.jersey.media:jersey-media-json-processing
+    versions:
+    - "2.34"
+  - dependency-name: org.glassfish.jersey.media:jersey-media-jaxb
+    versions:
+    - "2.34"
+  - dependency-name: org.glassfish.jersey.core:jersey-client
+    versions:
+    - "2.34"
+  - dependency-name: org.eclipse:yasson
+    versions:
+    - 2.0.1
+    - 2.0.2
+  - dependency-name: fish.payara.extras:payara-micro
+    versions:
+    - 5.2021.1
+  - dependency-name: fish.payara.extras:payara-embedded-all
+    versions:
+    - 5.2021.1
+  - dependency-name: org.glassfish.tyrus:tyrus-container-grizzly-client
+    versions:
+    - 2.0.0
+  - dependency-name: org.glassfish.tyrus:tyrus-client
+    versions:
+    - 2.0.0
