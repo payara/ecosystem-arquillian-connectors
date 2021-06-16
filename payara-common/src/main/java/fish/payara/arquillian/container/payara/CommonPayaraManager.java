@@ -164,6 +164,7 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
                 "Deployment Failure for")) {
                 throw new javax.enterprise.inject.spi.DeploymentException(containerException);
             }
+            throw containerException;
         }
 
         return protocolMetaData;
