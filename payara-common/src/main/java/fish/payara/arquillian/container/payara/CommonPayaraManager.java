@@ -63,6 +63,7 @@ import java.util.logging.Logger;
 
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+import org.glassfish.jersey.server.ContainerException;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
@@ -156,6 +157,14 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
             protocolMetaData.addContext(httpContext);
         } catch (PayaraClientException | IOException e) {
             throw new DeploymentException("Could not deploy " + archiveName, e);
+        } catch (ContainerException containerException) {
+            // The deploy command doesn't return the exception itself, so inspect the message for a DeploymentException
+            // and pass this on for the MicroProfile TCKs
+            if (containerException.getMessage().contains("javax.enterprise.inject.spi.DeploymentException: " +
+                "Deployment Failure for")) {
+                throw new javax.enterprise.inject.spi.DeploymentException(containerException);
+            }
+            throw containerException;
         }
 
         return protocolMetaData;
