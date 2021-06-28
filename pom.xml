@@ -75,7 +75,7 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.7.0.Alpha9</version.arquillian_core>
+        <version.arquillian_core>1.7.0.Alpha10</version.arquillian_core>
         <version.jersey>2.30.payara-p4</version.jersey>
         <version.javaee>8</version.javaee>
         <version.javaee.api>8.0.1</version.javaee.api>
