@@ -61,6 +61,7 @@ import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.glassfish.jersey.server.ContainerException;
@@ -163,6 +164,9 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
             if (containerException.getMessage().contains("javax.enterprise.inject.spi.DeploymentException: " +
                 "Deployment Failure for")) {
                 throw new javax.enterprise.inject.spi.DeploymentException(containerException);
+            } else if (containerException.getMessage().contains(
+                "org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException: Method")) {
+                throw new FaultToleranceDefinitionException(containerException);
             }
             throw containerException;
         }
