@@ -87,6 +87,7 @@
         <version.maven.shade.plugin>3.2.4</version.maven.shade.plugin>
         <version.maven.enforcer.plugin>3.0.0-M2</version.maven.enforcer.plugin>
         <version.maven.deploy.plugin>3.0.0-M1</version.maven.deploy.plugin>
+        <version.microprofile.fault-tolerance>3.0</version.microprofile.fault-tolerance>
 
         <version.java>1.8</version.java>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -253,6 +254,12 @@
                 <version>${version.arquillian_core}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+                <artifactId>microprofile-fault-tolerance-api</artifactId>
+                <version>${version.microprofile.fault-tolerance}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
