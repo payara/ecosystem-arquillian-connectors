@@ -44,7 +44,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>payara-client-ee8</artifactId>
-    <version>2.4.5-SNAPSHOT</version>
+    <version>2.4.6-SNAPSHOT</version>
     <name>Payara EE 8 client libs</name>
     
     <description>
@@ -80,7 +80,7 @@
     </developers>
   
     <properties>
-        <version.jersey>2.30.payara-p4</version.jersey>
+        <version.jersey>2.34.payara-p1</version.jersey>
         <gpg.keyname>Payara-CI</gpg.keyname>
     </properties>
     <build>
