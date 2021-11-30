@@ -161,9 +161,9 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         } catch (ContainerException containerException) {
             // The deploy command doesn't return the exception itself, so inspect the message for a DeploymentException
             // and pass this on for the MicroProfile TCKs
-            if (containerException.getMessage().contains("javax.enterprise.inject.spi.DeploymentException: " +
+            if (containerException.getMessage().contains("jakarta.enterprise.inject.spi.DeploymentException: " +
                 "Deployment Failure for")) {
-                throw new javax.enterprise.inject.spi.DeploymentException(containerException);
+                throw new jakarta.enterprise.inject.spi.DeploymentException(containerException);
             } else if (containerException.getMessage().contains(
                 "org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException: Method")) {
                 throw new FaultToleranceDefinitionException(containerException);
