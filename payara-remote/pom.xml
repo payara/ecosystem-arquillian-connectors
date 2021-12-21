@@ -64,7 +64,7 @@
     <parent>
         <groupId>fish.payara.arquillian</groupId>
         <artifactId>parent-payara-containers</artifactId>
-        <version>3.0.alpha2-SNAPSHOT</version>
+        <version>3.0.alpha2</version>
     </parent>
 
     <artifactId>arquillian-payara-server-remote</artifactId>
@@ -116,8 +116,8 @@
             <groupId>org.jboss.arquillian.testenricher</groupId>
             <artifactId>arquillian-testenricher-initialcontext</artifactId>
         </dependency>
-
-         <dependency>
+        
+        <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <optional>true</optional>
