@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -86,6 +86,7 @@ public class PayaraConfiguration implements ContainerConfiguration {
     private String configurationXml;
     private String resourcesXml;
     private boolean cleanup = true;
+    private String serverSystemProperties;
 
     @Override
     public void validate() throws ConfigurationException {
@@ -199,6 +200,24 @@ public class PayaraConfiguration implements ContainerConfiguration {
      */
     public void setResourcesXml(String resourcesXml) {
         this.resourcesXml = resourcesXml;
+    }
+
+    /**
+     * Sets the system properties to create on the embedded Payara Server instance. Should take the form of one or more
+     * 'key=value' delimited by ':'.
+     *
+     * @return The colon separated string of 'key=value' to pass to the create-system-properties command
+     */
+    public String getServerSystemProperties() {
+        return serverSystemProperties;
+    }
+
+    /**
+     * Sets the system properties to create on the embedded Payara Server instance. Should take the form of one or more
+     * 'key=value' delimited by ':'.
+     */
+    public void setServerSystemProperties(String serverSystemProperties) {
+        this.serverSystemProperties = serverSystemProperties;
     }
 
     /**
