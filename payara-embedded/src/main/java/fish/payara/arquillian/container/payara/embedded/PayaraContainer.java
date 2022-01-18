@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -199,6 +199,15 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
             bindCommandRunner();
         } catch (Exception e) {
             throw new LifecycleException("Could not start GlassFish Embedded", e);
+        }
+
+        String serverSystemProperties = configuration.getServerSystemProperties();
+        if (serverSystemProperties != null && !serverSystemProperties.equals("")) {
+            try {
+                executeCommand("create-system-properties", serverSystemProperties);
+            } catch (Throwable throwable) {
+                throw new RuntimeException("Error creating system properties: " + serverSystemProperties, throwable);
+            }
         }
         
         // Server needs to be started before we can deploy resources
