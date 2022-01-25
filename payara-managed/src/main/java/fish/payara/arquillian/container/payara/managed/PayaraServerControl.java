@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -63,6 +63,7 @@ import fish.payara.arquillian.container.payara.process.ProcessOutputConsumer;
 import fish.payara.arquillian.container.payara.process.SilentOutputConsumer;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,10 @@ import java.util.logging.Logger;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 
 import static java.lang.Runtime.getRuntime;
+import java.util.Collections;
+import java.util.Properties;
 import static java.util.logging.Level.SEVERE;
+import java.util.stream.Collectors;
 
 /**
  * A class for issuing asadmin commands using the admin-cli.jar of the GlassFish distribution.
@@ -112,6 +116,24 @@ class PayaraServerControl {
         }
 
         executeAdminDomainCommand("Starting container", "start-domain", args, createProcessOutputConsumer());
+        loadSystemProperties();
+    }
+
+    void loadSystemProperties() {
+        String serverSystemProperties = null;
+        final Properties props = new Properties();
+        try (InputStream istrm = Thread.currentThread().getContextClassLoader().getResourceAsStream("system-properties.properties")) {
+            props.load(istrm);
+            serverSystemProperties = props.stringPropertyNames()
+                    .stream()
+                    .map(key -> key + "=" + props.getProperty(key))
+                    .collect(Collectors.joining(":"));
+            if (serverSystemProperties != null && !serverSystemProperties.equals("")) {
+                executeAdminCommand("create-system-properties", "create-system-properties", Collections.singletonList(serverSystemProperties), createProcessOutputConsumer());
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException("Error creating system properties: " + serverSystemProperties, t);
+        }
     }
 
     void stop() throws LifecycleException {
