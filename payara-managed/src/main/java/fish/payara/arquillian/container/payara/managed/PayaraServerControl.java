@@ -123,16 +123,37 @@ class PayaraServerControl {
         String serverSystemProperties = null;
         final Properties props = new Properties();
         try (InputStream istrm = Thread.currentThread().getContextClassLoader().getResourceAsStream("system-properties.properties")) {
-            props.load(istrm);
+            if (istrm != null) {
+                props.load(istrm);
+            }
             serverSystemProperties = props.stringPropertyNames()
                     .stream()
                     .map(key -> key + "=" + props.getProperty(key))
                     .collect(Collectors.joining(":"));
             if (serverSystemProperties != null && !serverSystemProperties.equals("")) {
-                executeAdminCommand("create-system-properties", "create-system-properties", Collections.singletonList(serverSystemProperties), createProcessOutputConsumer());
+                executeAdminCommand(
+                        "create-system-properties from system-properties.properties",
+                        "create-system-properties",
+                        Collections.singletonList(serverSystemProperties),
+                        createProcessOutputConsumer()
+                );
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Error creating system properties: " + serverSystemProperties, t);
+            throw new RuntimeException("Error creating system properties from system-properties.properties: " + Thread.currentThread().getContextClassLoader().getResourceAsStream("system-properties.properties") + serverSystemProperties, t);
+        }
+
+        serverSystemProperties = config.getServerSystemProperties();
+        if (serverSystemProperties != null && !serverSystemProperties.equals("")) {
+            try {
+                executeAdminCommand(
+                        "create-system-properties from serverSystemProperties config",
+                        "create-system-properties",
+                        Collections.singletonList(serverSystemProperties),
+                        createProcessOutputConsumer()
+                );
+            } catch (Throwable t) {
+                throw new RuntimeException("Error creating system properties from serverSystemProperties config: " + serverSystemProperties, t);
+            }
         }
     }
 

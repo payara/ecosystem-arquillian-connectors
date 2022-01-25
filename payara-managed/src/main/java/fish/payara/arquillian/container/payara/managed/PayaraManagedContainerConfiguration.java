@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -79,6 +79,7 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
     private boolean outputToConsole = true;
     private boolean allowConnectingToRunningServer;
     private boolean enableH2;
+    private String serverSystemProperties;
 
     public String getPayaraHome() {
         return payaraHome;
@@ -128,6 +129,29 @@ public class PayaraManagedContainerConfiguration extends CommonPayaraConfigurati
      */
     public void setEnableH2(boolean enableH2) {
         this.enableH2 = enableH2;
+    }
+
+    /**
+     * Sets the system properties to create on the managed Payara Server
+     * instance. Should take the form of one or more 'key=value' delimited by
+     * ':'.
+     *
+     * @return The colon separated string of 'key=value' to pass to the
+     * create-system-properties command
+     */
+    public String getServerSystemProperties() {
+        return serverSystemProperties;
+    }
+
+    /**
+     * Sets the system properties to create on the managed Payara Server
+     * instance.Should take the form of one or more 'key=value' delimited by
+     * ':'.
+     *
+     * @param serverSystemProperties
+     */
+    public void setServerSystemProperties(String serverSystemProperties) {
+        this.serverSystemProperties = serverSystemProperties;
     }
 
     @Override
