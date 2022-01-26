@@ -12,6 +12,7 @@
       </property>
       <property name="bindHttpPort">7070</property>
       <property name="bindHttpsPort">7071</property>
+      <property name="serverSystemProperties">wibbly=wobbly:bibbly=bobbly</property>
     </configuration>
   </container>
 </arquillian>
