@@ -80,7 +80,7 @@
     </developers>
   
     <properties>
-        <version.jersey>3.0.1</version.jersey>
+        <version.jersey>3.0.4</version.jersey>
         <gpg.keyname>Payara-CI</gpg.keyname>
     </properties>
     <build>
