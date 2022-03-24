@@ -62,7 +62,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>3.0.alpha4-SNAPSHOT</version>
+    <version>3.0.alpha4</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>
@@ -76,9 +76,9 @@
 
     <properties>
         <version.arquillian_core>1.7.0.Alpha10</version.arquillian_core>
-        <version.jersey>3.0.1</version.jersey>
+        <version.jersey>3.0.4</version.jersey>
         <version.jakartaee>9</version.jakartaee>
-        <version.jakartaee.api>9.1.0-RC1</version.jakartaee.api>
+        <version.jakartaee.api>9.1.0</version.jakartaee.api>
         <version.maven.surefire.plugin>3.0.0-M5</version.maven.surefire.plugin>
         <version.maven.source.plugin>3.2.1</version.maven.source.plugin>
         <version.maven.jar.plugin>3.2.0</version.maven.jar.plugin>
@@ -89,14 +89,14 @@
         <version.maven.deploy.plugin>3.0.0-M1</version.maven.deploy.plugin>
         <version.microprofile.fault-tolerance>4.0</version.microprofile.fault-tolerance>
 
-        <version.java>1.8</version.java>
+        <version.java>11</version.java>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <version.maven.enforcer.java.limit>12</version.maven.enforcer.java.limit>
         <docs.phase>deploy</docs.phase>
 
-        <version.payara>6.2021.1.Alpha1</version.payara>
+        <version.payara>6.2022.1.Alpha2</version.payara>
         <payara.home>payara6</payara.home>
 
         <gpg.keyname>Payara-CI</gpg.keyname>
