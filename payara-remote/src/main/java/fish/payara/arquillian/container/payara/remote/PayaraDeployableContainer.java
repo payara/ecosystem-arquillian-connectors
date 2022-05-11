@@ -95,7 +95,7 @@ public class PayaraDeployableContainer implements DeployableContainer<CommonPaya
     }
 
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 5.0");
+        return new ProtocolDescription("Servlet 6.0");
     }
 
     public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
