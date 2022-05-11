@@ -130,7 +130,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 5.0");
+        return new ProtocolDescription("Servlet 6.0");
     }
 
     @Override
