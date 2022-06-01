@@ -399,6 +399,7 @@
                     <version>${version.maven.shade.plugin}</version>
                     <executions>
                         <execution>
+                            <id>shade</id>
                             <phase>package</phase>
                             <goals>
                                 <goal>shade</goal>
@@ -445,7 +446,6 @@
                                             <exclude>org.jboss.*</exclude>
                                         </excludes>
                                     </relocation>
-
                                 </relocations>
                             </configuration>
                         </execution>
