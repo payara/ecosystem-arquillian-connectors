@@ -74,14 +74,13 @@ public interface PayaraClient {
 
     /**
      * Start-up the server
-     * 
-     * 
+     *
+     *
      * <ul>
      *   <li>   Get the node addresses list associated with the target
      *   <li>    Check the status of the target server instance
      *   <li>    In case of cluster tries to fund an instance which has RUNNING status
      * </ul>
-     *
      */
     public void startUp();
 
@@ -94,7 +93,7 @@ public interface PayaraClient {
      * @throws DeploymentException if something goes wrong with the deployment
      * @return subComponents - a map of SubComponents of the application
      */
-    public HTTPContext doDeploy(String name, FormDataMultiPart form) throws DeploymentException;
+    public HTTPContext doDeploy(String name, MultiPart form) throws DeploymentException;
 
     /**
      * Do undeploy the application
@@ -103,11 +102,22 @@ public interface PayaraClient {
      * @param form - form
      * @return responseMap
      */
-    public Map<String, Object> doUndeploy(String name, FormDataMultiPart form);
+    public Map<String, Object> doUndeploy(String name, MultiPart form);
 
     /**
      * Verify whether the Domain Administration Server is running.
+     *
      * @return true if the DAS is running, false otherwise
      */
     public boolean isDASRunning();
+
+    // we shade jersey API, therefore clients should depend on our class that
+    // hides that away without need for further relocations
+    static MultiPart newMultipart() {
+        return new MultiPart();
+    }
+
+    class MultiPart extends FormDataMultiPart {
+
+    }
 }
