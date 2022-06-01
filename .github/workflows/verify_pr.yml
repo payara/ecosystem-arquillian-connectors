@@ -40,7 +40,7 @@ jobs:
     - name: Build with Maven
       env:
         MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.rto=30000 -Djava.net.preferIPv4Stack=true
-      run: mvn -B verify
+      run: mvn -B -V -X verify
 
     - name: Archive logs on failure
       if: failure()
