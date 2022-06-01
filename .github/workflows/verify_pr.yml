@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -48,4 +47,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: logs
-        path: "**/target/*.log*"
+        path: "**/target/*"
