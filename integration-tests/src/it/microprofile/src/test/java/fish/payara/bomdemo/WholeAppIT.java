@@ -55,6 +55,7 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -100,43 +101,45 @@ public class WholeAppIT {
         WebTarget metricEndpoint = client.target(baseUrl).path("data/metric");
 
         long counter = metricEndpoint.path("increment").request().get(Long.class);
-        assertTrue("counter should be at least 1, is "+counter, counter > 0);
+        assertTrue("counter should be at least 1, is " + counter, counter > 0);
 
         WebTarget metricsPath = client.target(baseUrl.resolve("/")).path("metrics");
         JsonObject metrics = metricsPath
                 .request(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
         assertNotNull(metrics);
         /*
-         {
-          "vendor": {
-            "system.cpu.load": 0.6216716209333485
-          },
+        {
           "base": {
             // ...
           },
           "application": {
-            "fish.payara.bomdemo.metric.MetricController.endpoint_counter": 1,
+            "fish.payara.bomdemo.metric.MetricController.endpoint_counter;_app=microprofile-test-3.0.alpha6-snapshot": 1,
             "fish.payara.bomdemo.metric.MetricController.timed-request": {
-              "fiveMinRate": 0.0,
-              "max": 0,
-              "count": 0,
-              "p50": 0.0,
-              "p95": 0.0,
-              "p98": 0.0,
-              "p75": 0.0,
-              "p99": 0.0,
-              "min": 0,
-              "fifteenMinRate": 0.0,
-              "meanRate": 0.0,
-              "mean": 0.0,
-              "p999": 0.0,
-              "oneMinRate": 0.0,
-              "stddev": 0.0
+              "elapsedTime;_app=microprofile-test-3.0.alpha6-snapshot": 0,
+              "count;_app=microprofile-test-3.0.alpha6-snapshot": 0,
+              "meanRate;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "oneMinRate;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "fiveMinRate;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "fifteenMinRate;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "min;_app=microprofile-test-3.0.alpha6-snapshot": 0,
+              "max;_app=microprofile-test-3.0.alpha6-snapshot": 0,
+              "mean;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "stddev;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p50;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p75;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p95;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p98;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p99;_app=microprofile-test-3.0.alpha6-snapshot": 0.0,
+              "p999;_app=microprofile-test-3.0.alpha6-snapshot": 0.0
             }
           }
         }
         */
-        assertEquals(counter, metrics.getJsonObject("application").getJsonNumber("fish.payara.bomdemo.metric.MetricController.endpoint_counter").longValue());
+        JsonObject app = metrics.getJsonObject("application");
+        String key = app.keySet().stream().filter(s -> s.contains("endpoint_counter")).findFirst().orElseThrow(() -> new AssertionError(
+                "endpoint_counter should be present in " + app));
+        assertEquals(counter,
+                metrics.getJsonObject("application").getJsonNumber(key).longValue());
         assertNotNull(metrics.getJsonObject("application").getJsonObject("fish.payara.bomdemo.metric.MetricController.timed-request"));
     }
 
