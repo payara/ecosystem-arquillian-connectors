@@ -69,7 +69,7 @@
         </dependency>
         <dependency>
             <groupId>fish.payara.arquillian</groupId>
-            <artifactId>payara-micro-remote</artifactId>
+            <artifactId>arquillian-payara-micro-remote</artifactId>
             <scope>test</scope>
             <version>${project.version}</version>
         </dependency>
