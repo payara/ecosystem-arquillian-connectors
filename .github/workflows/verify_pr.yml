@@ -5,7 +5,7 @@ name: Verify PR
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ master, Payara6, Payara4 ]
     paths-ignore:
       - 'README.*'
       - '**/README.*'
