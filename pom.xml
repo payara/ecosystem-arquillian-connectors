@@ -405,7 +405,6 @@
                                 <goal>shade</goal>
                             </goals>
                             <configuration>
-                                <createDependencyReducedPom>false</createDependencyReducedPom>
                                 <artifactSet>
                                     <includes>
                                         <include>*</include>
@@ -415,41 +414,42 @@
                                         <exclude>fish.payara.arquillian:*-common</exclude>
                                     </excludes>
                                 </artifactSet>
-                                <transformers>
-                                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                                    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-                                </transformers>
-
-                                <relocations>
-                                    <relocation>
-                                        <pattern>jakarta.</pattern>
-                                        <shadedPattern>fish.payara.arquillian.shaded.jakarta.</shadedPattern>
-                                        <excludes>
-                                            <!-- we don't depend on activation, but Jersey refers to it -->
-                                            <exclude>jakarta.activation.*</exclude>
-                                        </excludes>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>javassist.</pattern>
-                                        <shadedPattern>fish.payara.arquillian.shaded.javassist.</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>org.</pattern>
-                                        <shadedPattern>fish.payara.arquillian.shaded.</shadedPattern>
-                                        <!-- These packages are in JDK -->
-                                        <excludes>
-                                            <exclude>org.xml.*</exclude>
-                                            <exclude>org.w3c.*</exclude>
-                                            <exclude>org.omg.*</exclude>
-                                            <exclude>org.ietf.*</exclude>
-                                            <!-- and arquillian ones -->
-                                            <exclude>org.jboss.*</exclude>
-                                        </excludes>
-                                    </relocation>
-                                </relocations>
                             </configuration>
                         </execution>
                     </executions>
+                  <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <transformers>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                    </transformers>
+
+                    <relocations>
+                      <relocation>
+                        <pattern>jakarta.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.jakarta.</shadedPattern>
+                        <excludes>
+                          <!-- we don't depend on activation, but Jersey refers to it -->
+                          <exclude>jakarta.activation.*</exclude>
+                        </excludes>
+                      </relocation>
+                      <relocation>
+                        <pattern>javassist.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.javassist.</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.</shadedPattern>
+                        <excludes>
+                          <exclude>org.jboss.**</exclude>
+                          <exclude>org.w3c.**</exclude>
+                          <exclude>org.omg.**</exclude>
+                          <exclude>org.ietf.**</exclude>
+                          <exclude>org.xml.**</exclude>
+                        </excludes>
+                      </relocation>
+                    </relocations>
+                  </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
