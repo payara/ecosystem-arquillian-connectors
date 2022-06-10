@@ -61,6 +61,7 @@ import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
+import org.jboss.arquillian.protocol.servlet5.v_5.ServletProtocol;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptor;
 
@@ -122,7 +123,7 @@ public class PayaraManagedDeployableContainer implements DeployableContainer<Pay
 
     @Override
     public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 6.0");
+        return new ProtocolDescription(ServletProtocol.PROTOCOL_NAME);
     }
 
     @Override

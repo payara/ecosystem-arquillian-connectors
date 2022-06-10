@@ -62,7 +62,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>3.0.alpha5</version>
+    <version>3.0.alpha6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>
@@ -78,13 +78,13 @@
         <version.arquillian_core>1.7.0.Alpha10</version.arquillian_core>
         <version.jersey>3.1.0-M5</version.jersey>
         <version.jakartaee>10</version.jakartaee>
-        <version.jakartaee.api>10.0.0-RC1</version.jakartaee.api>
+        <version.jakartaee.api>10.0.0</version.jakartaee.api>
         <version.maven.surefire.plugin>3.0.0-M5</version.maven.surefire.plugin>
         <version.maven.source.plugin>3.2.1</version.maven.source.plugin>
         <version.maven.jar.plugin>3.2.0</version.maven.jar.plugin>
         <version.maven.gpg.plugin>3.0.1</version.maven.gpg.plugin>
         <version.maven.javadoc.plugin>3.3.1</version.maven.javadoc.plugin>
-        <version.maven.shade.plugin>3.2.4</version.maven.shade.plugin>
+        <version.maven.shade.plugin>3.3.0</version.maven.shade.plugin>
         <version.maven.enforcer.plugin>3.0.0</version.maven.enforcer.plugin>
         <version.maven.deploy.plugin>3.0.0-M1</version.maven.deploy.plugin>
         <version.microprofile.fault-tolerance>4.0</version.microprofile.fault-tolerance>
@@ -176,8 +176,6 @@
         <module>payara-remote</module>
         <module>payara-embedded</module>
         <module>payara-micro</module>
-        <module>payara-client-ee7</module>
-        <module>payara-client-ee8</module>
         <module>payara-client-ee9</module>
         <module>payara-micro-deployer</module>
         <module>payara-micro-remote</module>
@@ -401,96 +399,57 @@
                     <version>${version.maven.shade.plugin}</version>
                     <executions>
                         <execution>
+                            <id>shade</id>
                             <phase>package</phase>
                             <goals>
                                 <goal>shade</goal>
                             </goals>
                             <configuration>
-                                <createDependencyReducedPom>false</createDependencyReducedPom>
                                 <artifactSet>
                                     <includes>
-                                        <include>org.glassfish:*</include>
-                                        <include>org.glassfish.hk2</include>
-                                        <include>org.glassfish.hk2.external:*</include>
-                                        <include>org.glassfish.jersey.core:*</include>
-                                        <include>org.glassfish.jersey.inject:*</include>
-                                        <include>org.glassfish.jersey.media:*</include>
-                                        <include>org.glassfish.jersey.ext:*</include>
-                                        <include>org.jvnet:*</include>
-                                        <include>org.jvnet.mimepull:*</include>
-
-                                        <include>com.fasterxml.jackson.core:*</include>
-                                        <include>com.fasterxml.jackson.module:*</include>
-                                        <include>org.glassfish:jakarta.json:*</include>
-                                        <include>jakarta.validation:jakarta.validation-api:*</include>
-                                        <include>jakarta.annotation:jakarta.annotation-api:*</include>
-                                        <include>jakarta.ws.rs:jakarta.ws.rs-api:*</include>
+                                        <include>*</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>org.jboss*:*</exclude>
+                                        <exclude>fish.payara.arquillian:*-common</exclude>
+                                    </excludes>
                                 </artifactSet>
-                                <transformers>
-                                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                                    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-                                </transformers>
-
-                                <relocations>
-                                    <relocation>
-                                        <pattern>org.glassfish.json</pattern>
-                                        <shadedPattern>fish.payara.arquillian.json</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>org.glassfish.hk2</pattern>
-                                        <shadedPattern>fish.payara.arquillian.hk2</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>org.glassfish.jersey</pattern>
-                                        <shadedPattern>fish.payara.arquillian.jersey</shadedPattern>
-                                    </relocation>
-
-                                    <relocation>
-                                        <pattern>com.fasterxml</pattern>
-                                        <shadedPattern>fish.payara.arquillian.faster</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>jersey.repackaged</pattern>
-                                        <shadedPattern>fish.payara.arquillian.jersey.repackaged</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>com.sun.research</pattern>
-                                        <shadedPattern>fish.payara.arquillian.research</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>org.jvnet</pattern>
-                                        <shadedPattern>fish.payara.arquillian.jvnet</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>org.aopalliance</pattern>
-                                        <shadedPattern>fish.payara.arquillian.aopalliance</shadedPattern>
-                                    </relocation>
-
-<!--                                    <relocation>
-                                        <pattern>jakarta.json</pattern>
-                                        <shadedPattern>fish.payara.arquillian.jakarta.json</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>jakarta.validation</pattern>
-                                        <shadedPattern>fish.payara.arquillian.validation</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>jakarta.annotation</pattern>
-                                        <shadedPattern>fish.payara.arquillian.annotation</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>jakarta.ws</pattern>
-                                        <shadedPattern>fish.payara.arquillian.ws</shadedPattern>
-                                    </relocation>
-                                    <relocation>
-                                        <pattern>jakarta.inject</pattern>
-                                        <shadedPattern>fish.payara.arquillian.inject</shadedPattern>
-                                    </relocation>-->
-                                </relocations>
                             </configuration>
                         </execution>
                     </executions>
+                  <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <transformers>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                    </transformers>
+
+                    <relocations>
+                      <relocation>
+                        <pattern>jakarta.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.jakarta.</shadedPattern>
+                        <excludes>
+                          <!-- we don't depend on activation, but Jersey refers to it -->
+                          <exclude>jakarta.activation.*</exclude>
+                        </excludes>
+                      </relocation>
+                      <relocation>
+                        <pattern>javassist.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.javassist.</shadedPattern>
+                      </relocation>
+                      <relocation>
+                        <pattern>org.</pattern>
+                        <shadedPattern>fish.payara.arquillian.shaded.</shadedPattern>
+                        <excludes>
+                          <exclude>org.jboss.**</exclude>
+                          <exclude>org.w3c.**</exclude>
+                          <exclude>org.omg.**</exclude>
+                          <exclude>org.ietf.**</exclude>
+                          <exclude>org.xml.**</exclude>
+                        </excludes>
+                      </relocation>
+                    </relocations>
+                  </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

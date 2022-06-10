@@ -56,15 +56,20 @@
  */
 package fish.payara.arquillian.container.payara;
 
-import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
-
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import fish.payara.arquillian.container.payara.clientutils.PayaraClient;
+import fish.payara.arquillian.container.payara.clientutils.PayaraClientException;
+import fish.payara.arquillian.container.payara.clientutils.PayaraClientService;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import org.glassfish.jersey.server.ContainerException;
 import org.jboss.arquillian.container.spi.client.container.DeploymentException;
 import org.jboss.arquillian.container.spi.client.container.LifecycleException;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
@@ -72,23 +77,14 @@ import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaD
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 
-import fish.payara.arquillian.container.payara.clientutils.PayaraClient;
-import fish.payara.arquillian.container.payara.clientutils.PayaraClientException;
-import fish.payara.arquillian.container.payara.clientutils.PayaraClientService;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
+import static jakarta.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 
 /**
  * A class to aid in deployment and undeployment of archives involving a GlassFish container.
  * This class encapsulates the operations involving the GlassFishClient class.
  * Extracted from the GlassFish 3.1 remote container.
  *
- * @param <C>
- *     A class of type {@link CommonPayaraConfiguration}
- *
+ * @param <C> A class of type {@link CommonPayaraConfiguration}
  * @author Vineet Reynolds
  */
 public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
@@ -96,11 +92,15 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
     private static final Logger log = Logger.getLogger(CommonPayaraManager.class.getName());
 
     private static final String DELETE_OPERATION = "__deleteoperation";
+
     private static final Lock deployLock;
+
     private static final boolean prependDeploySequence;
 
     private final C configuration;
+
     private final PayaraClient payaraClient;
+
     private static final AtomicInteger deploySequence = new AtomicInteger();
 
     static {
@@ -136,13 +136,13 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         final String deploymentName = createDeploymentName(prependDeploySequence ?
                 String.format("r%d-%s", deploySequence.incrementAndGet(), archiveName) : archiveName);
 
-        log.log(Level.FINE, "Deploying {0}", new Object[] { deploymentName });
+        log.log(Level.FINE, "Deploying {0}", new Object[]{deploymentName});
 
         final ProtocolMetaData protocolMetaData = new ProtocolMetaData();
 
         try (InputStream deployment = archive.as(ZipExporter.class).exportAsInputStream()) {
             // Build up the POST form to send to Payara
-            final FormDataMultiPart form = new FormDataMultiPart();
+            final PayaraClient.MultiPart form = PayaraClient.newMultipart();
             form.bodyPart(new StreamDataBodyPart("id", deployment, archiveName));
 
             addDeployFormFields(deploymentName, form);
@@ -156,22 +156,39 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
                 deployLock.unlock();
             }
             protocolMetaData.addContext(httpContext);
-        } catch (PayaraClientException | IOException e) {
+        } catch (IOException e) {
             throw new DeploymentException("Could not deploy " + archiveName, e);
-        } catch (ContainerException containerException) {
+        } catch (PayaraClientException e) {
             // The deploy command doesn't return the exception itself, so inspect the message for a DeploymentException
             // and pass this on for the MicroProfile TCKs
-            if (containerException.getMessage().contains("jakarta.enterprise.inject.spi.DeploymentException: " +
-                "Deployment Failure for")) {
-                throw new jakarta.enterprise.inject.spi.DeploymentException(containerException);
-            } else if (containerException.getMessage().contains(
-                "org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException: Method")) {
-                throw new FaultToleranceDefinitionException(containerException);
+            if (e.getMessage().contains("jakarta.enterprise.inject.spi.DeploymentException: " +
+                    "Deployment Failure for")) {
+                rethrowAs("jakarta.enterprise.inject.spi.DeploymentException", e);
+            } else if (e.getMessage().contains(
+                    "org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException: Method")) {
+                rethrowAs("org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException", e);
             }
-            throw containerException;
+            throw new DeploymentException("Could not deploy " + archiveName, e);
         }
 
         return protocolMetaData;
+    }
+
+    private void rethrowAs(String s, PayaraClientException e) {
+        try {
+            Class<?> exceptionClass = Class.forName(s);
+            Constructor<?> wrappingConstructor = exceptionClass.getConstructor(Throwable.class);
+            Object wrapped = wrappingConstructor.newInstance(e);
+            if (wrapped instanceof RuntimeException) {
+                throw (RuntimeException) wrapped;
+            } else {
+                log.log(Level.WARNING, "Would rethrow specific exception, but " + s + " is not a RuntimeException", wrapped);
+                throw e;
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+            log.log(Level.INFO, "Cannot rethrow API exception ", ex);
+            throw e;
+        }
     }
 
     public void undeploy(Archive<?> archive) throws DeploymentException {
@@ -184,7 +201,7 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
 
         try {
             // Build up the POST form to send to Payara
-            FormDataMultiPart form = new FormDataMultiPart();
+            PayaraClient.MultiPart form = PayaraClient.newMultipart();
             form.field("target", configuration.getTarget(), TEXT_PLAIN_TYPE);
             form.field("operation", DELETE_OPERATION, TEXT_PLAIN_TYPE);
 
@@ -216,7 +233,7 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
         return correctedName;
     }
 
-    private void addDeployFormFields(String name, FormDataMultiPart deployform) {
+    private void addDeployFormFields(String name, PayaraClient.MultiPart deployform) {
 
         // Add the name field, the name is the archive filename without extension
         deployform.field("name", name, TEXT_PLAIN_TYPE);

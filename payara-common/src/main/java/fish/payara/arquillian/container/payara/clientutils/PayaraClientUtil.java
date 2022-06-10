@@ -56,49 +56,47 @@
  */
 package fish.payara.arquillian.container.payara.clientutils;
 
-import static java.lang.Double.parseDouble;
-import static java.lang.Long.parseLong;
-import static java.util.logging.Level.SEVERE;
-import static jakarta.ws.rs.client.Entity.entity;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
-import static jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL;
-import static javax.xml.stream.XMLInputFactory.IS_VALIDATING;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.basic;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Invocation.Builder;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.StatusType;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.glassfish.jersey.client.filter.CsrfProtectionFilter;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ContainerException;
 
-import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.logging.Level;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import static jakarta.ws.rs.client.Entity.entity;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_XML_TYPE;
+import static jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL;
+import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
+import static java.util.logging.Level.SEVERE;
+import static javax.xml.stream.XMLInputFactory.IS_VALIDATING;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.glassfish.jersey.client.authentication.HttpAuthenticationFeature.basic;
 
 /**
  * @author Z.Paulovics
@@ -156,7 +154,7 @@ public class PayaraClientUtil {
                 prepareClient(additionalResourceUrl).get());
     }
 
-    public List<Map<String, Object>> getInstancesList(String additionalResourceUrl) throws ContainerException {
+    public List<Map<String, Object>> getInstancesList(String additionalResourceUrl) {
 
         Map<String, Object> extraProperties = getExtraProperties(GETRequest(additionalResourceUrl));
 
@@ -308,7 +306,7 @@ public class PayaraClientUtil {
         } else {
             message += " [status: " + status.getFamily() + " reason: " + status.getReasonPhrase() + "]";
             log.severe(message);
-            throw new ContainerException(message);
+            throw new PayaraClientException(message);
         }
 
         return responseMap;
