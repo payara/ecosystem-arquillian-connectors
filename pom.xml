@@ -327,7 +327,7 @@
                     <splitindex>true</splitindex>
                     <doctitle>Arquillian connector</doctitle>
                     <links>
-                        <link>https://docs.oracle.com/javaee/${version.jakartaee}/api/</link>
+                        <link>https://jakarta.ee/specifications/platform/9.1/apidocs/</link>
                     </links>
                 </configuration>
                 <executions>
