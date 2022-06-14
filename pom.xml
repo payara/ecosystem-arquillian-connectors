@@ -62,7 +62,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>3.0.alpha6-SNAPSHOT</version>
+    <version>3.0.alpha7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>
@@ -327,7 +327,9 @@
                     <splitindex>true</splitindex>
                     <doctitle>Arquillian connector</doctitle>
                     <links>
-                        <link>https://docs.oracle.com/javaee/${version.jakartaee}/api/</link>
+                        <!-- Jakarta EE 10 apidocs not available yet, point to 9.1 for now -->
+                        <!--<link>https://jakarta.ee/specifications/platform/${version.jakartaee}/apidocs/</link>-->
+                        <link>https://jakarta.ee/specifications/platform/9.1/apidocs/</link>
                     </links>
                 </configuration>
                 <executions>
