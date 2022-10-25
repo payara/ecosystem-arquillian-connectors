@@ -65,6 +65,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.spi.ConfigurationException;
@@ -87,6 +88,15 @@ public class PayaraConfiguration implements ContainerConfiguration {
     private String resourcesXml;
     private boolean cleanup = true;
     private String serverSystemProperties;
+    private String hazelcastConfigurationFile;
+
+    public String getHazelcastConfigurationFile() {
+        return hazelcastConfigurationFile;
+    }
+
+    public void setHazelcastConfigurationFile(String hazelcastConfigurationFile) {
+        this.hazelcastConfigurationFile = hazelcastConfigurationFile;
+    }
 
     @Override
     public void validate() throws ConfigurationException {
