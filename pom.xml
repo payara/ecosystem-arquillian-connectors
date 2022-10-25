@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) [2017-2022] Payara Foundation and/or its affiliates. All rights reserved.
 
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -96,7 +96,7 @@
         <version.maven.enforcer.java.limit>1.9</version.maven.enforcer.java.limit>
         <docs.phase>deploy</docs.phase>
 
-        <version.payara>5.2021.10</version.payara>
+        <version.payara>5.2022.3</version.payara>
         <payara.home>payara5</payara.home>
 
         <gpg.keyname>Payara-CI</gpg.keyname>
