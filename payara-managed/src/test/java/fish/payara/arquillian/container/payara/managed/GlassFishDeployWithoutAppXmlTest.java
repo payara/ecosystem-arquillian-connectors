@@ -56,6 +56,7 @@
  */
 package fish.payara.arquillian.container.payara.managed;
 
+import jakarta.enterprise.inject.Model;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -104,6 +105,7 @@ public class GlassFishDeployWithoutAppXmlTest {
     }
 }
 
+@Model
 class Client {
 
 }

@@ -56,5 +56,8 @@
  */
 package fish.payara.arquillian.container.payara.managed;
 
+import jakarta.enterprise.inject.Model;
+
+@Model
 public class SimpleBean {
 }
