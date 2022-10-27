@@ -123,6 +123,7 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
     private boolean shouldSetPort = true;
     private int bindHttpPort;
     private int bindHttpsPort;
+    private String hazelcastConfigurationFile;
 
     @Override
     public Class<PayaraConfiguration> getConfigurationClass() {
@@ -141,6 +142,11 @@ public class PayaraContainer implements DeployableContainer<PayaraConfiguration>
         BootstrapProperties bootstrapProps = new BootstrapProperties();
         if (configuration.getInstallRoot() != null) {
             bootstrapProps.setInstallRoot(configuration.getInstallRoot());
+        }
+
+        hazelcastConfigurationFile = configuration.getHazelcastConfigurationFile();
+        if (hazelcastConfigurationFile != null) {
+            bootstrapProps.setProperty("hazelcast.config", hazelcastConfigurationFile);
         }
         
         try {

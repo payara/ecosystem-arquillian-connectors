@@ -87,6 +87,15 @@ public class PayaraConfiguration implements ContainerConfiguration {
     private String resourcesXml;
     private boolean cleanup = true;
     private String serverSystemProperties;
+    private String hazelcastConfigurationFile;
+
+    public String getHazelcastConfigurationFile() {
+        return hazelcastConfigurationFile;
+    }
+
+    public void setHazelcastConfigurationFile(String hazelcastConfigurationFile) {
+        this.hazelcastConfigurationFile = hazelcastConfigurationFile;
+    }
 
     @Override
     public void validate() throws ConfigurationException {
