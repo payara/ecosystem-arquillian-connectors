@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
+  Copyright (c) [2017-2022] Payara Foundation and/or its affiliates. All rights reserved.
 
   The contents of this file are subject to the terms of either the GNU
   General Public License Version 2 only ("GPL") or the Common Development
@@ -62,7 +62,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>3.0.alpha7-SNAPSHOT</version>
+    <version>3.0.alpha7</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>

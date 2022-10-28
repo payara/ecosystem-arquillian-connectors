@@ -56,12 +56,15 @@
  */
 package fish.payara.arquillian.container.payara.embedded.app;
 
+import jakarta.enterprise.inject.Model;
+
 /**
  * NameProvider
  *
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
+@Model
 public class NameProvider {
     public String getName() {
         return "Arquillian";
