@@ -448,6 +448,7 @@
                           <exclude>org.omg.**</exclude>
                           <exclude>org.ietf.**</exclude>
                           <exclude>org.xml.**</exclude>
+                          <exclude>org.eclipse.**</exclude>
                         </excludes>
                       </relocation>
                     </relocations>
