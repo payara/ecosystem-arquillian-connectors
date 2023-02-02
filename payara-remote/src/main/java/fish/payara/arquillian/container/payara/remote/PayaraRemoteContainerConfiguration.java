@@ -56,61 +56,68 @@
  */
 package fish.payara.arquillian.container.payara.remote;
 
-import org.jboss.arquillian.container.spi.client.container.DeployableContainer;
-import org.jboss.arquillian.container.spi.client.container.DeploymentException;
-import org.jboss.arquillian.container.spi.client.container.LifecycleException;
-import org.jboss.arquillian.container.spi.client.protocol.ProtocolDescription;
-import org.jboss.arquillian.container.spi.client.protocol.metadata.ProtocolMetaData;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.descriptor.api.Descriptor;
-
 import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
-import fish.payara.arquillian.container.payara.CommonPayaraManager;
+import fish.payara.arquillian.container.payara.RemoteInstanceConnectionProvider;
+import org.jboss.arquillian.container.spi.ConfigurationException;
+
+import java.util.Optional;
+
+import static fish.payara.arquillian.container.payara.clientutils.PayaraClient.ADMINSERVER;
+import static org.jboss.arquillian.container.spi.client.deployment.Validate.notNullOrEmpty;
 
 /**
- * Payara remote container using REST deployment.
+ * Configuration for Managed Payara containers.
  *
+ * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
  * @author <a href="http://community.jboss.org/people/LightGuard">Jason Porter</a>
+ * @author Vineet Reynolds
  */
-public class PayaraRemoteDeployableContainer implements DeployableContainer<PayaraRemoteContainerConfiguration> {
-
-    private CommonPayaraManager<CommonPayaraConfiguration> payaraManager;
-
-    public Class<PayaraRemoteContainerConfiguration> getConfigurationClass() {
-        return PayaraRemoteContainerConfiguration.class;
+public class PayaraRemoteContainerConfiguration extends CommonPayaraConfiguration implements RemoteInstanceConnectionProvider {
+    
+    private String httpHost;
+    private Integer httpPort;
+    
+    public Optional<String> getHttpHost() {
+        return Optional.ofNullable(httpHost);
+    }
+    
+    /**
+     * @param httpHost The hostname or ip address where the remote HTTP end can be reached
+     */
+    public void setHttpHost(String httpHost) {
+        this.httpHost = httpHost;
+    }
+    
+    public Optional<Integer> getHttpPort() {
+        return Optional.ofNullable(httpPort);
+    }
+    
+    /**
+     * @param httpPort The port where the remote HTTP end can be reached
+     */
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
     }
 
-    public void setup(PayaraRemoteContainerConfiguration configuration) {
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration must not be null");
+    @Override
+    public String getTarget() {
+        return ADMINSERVER;
+    }
+
+    /**
+     * Validates if current configuration is valid, that is if all required properties are set and
+     * have correct values
+     */
+    @Override
+    public void validate() throws ConfigurationException {
+        if (httpPort != null && (httpPort < 0 || httpPort > 65535)) {
+            throw new IllegalArgumentException("The arquillian.xml property httpPort must be between 1 and 65535");
         }
-        payaraManager = new CommonPayaraManager<>(configuration);
-    }
+        
+        if (httpHost != null && httpHost.isEmpty()) {
+            throw new IllegalArgumentException("The arquillian.xml property httpHost must be not null or empty");
+        }
 
-    public void start() throws LifecycleException {
-        payaraManager.start();
-    }
-
-    public void stop() throws LifecycleException {
-    }
-
-    public ProtocolDescription getDefaultProtocol() {
-        return new ProtocolDescription("Servlet 3.0");
-    }
-
-    public ProtocolMetaData deploy(Archive<?> archive) throws DeploymentException {
-        return payaraManager.deploy(archive);
-    }
-
-    public void undeploy(Archive<?> archive) throws DeploymentException {
-        payaraManager.undeploy(archive);
-    }
-
-    public void deploy(Descriptor descriptor) throws DeploymentException {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    public void undeploy(Descriptor descriptor) throws DeploymentException {
-        throw new UnsupportedOperationException("Not implemented");
+        super.validate();
     }
 }
