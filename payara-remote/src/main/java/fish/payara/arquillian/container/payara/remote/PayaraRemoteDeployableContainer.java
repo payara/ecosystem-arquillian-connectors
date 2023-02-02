@@ -72,7 +72,7 @@ import fish.payara.arquillian.container.payara.CommonPayaraManager;
  *
  * @author <a href="http://community.jboss.org/people/LightGuard">Jason Porter</a>
  */
-public class PayaraDeployableContainer implements DeployableContainer<CommonPayaraConfiguration> {
+public class PayaraRemoteDeployableContainer implements DeployableContainer<CommonPayaraConfiguration> {
 
     private CommonPayaraManager<CommonPayaraConfiguration> payaraManager;
 

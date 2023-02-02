@@ -63,10 +63,10 @@ import org.jboss.arquillian.core.spi.LoadableExtension;
  * @author <a href="mailto:aslak@redhat.com">Aslak Knutsen</a>
  * @version $Revision: $
  */
-public class PayaraExtension implements LoadableExtension {
+public class PayaraRemoteContainerExtension implements LoadableExtension {
     
     @Override
     public void register(ExtensionBuilder builder) {
-        builder.service(DeployableContainer.class, PayaraDeployableContainer.class);
+        builder.service(DeployableContainer.class, PayaraRemoteDeployableContainer.class);
     }
 }
