@@ -448,6 +448,7 @@
                           <exclude>org.omg.**</exclude>
                           <exclude>org.ietf.**</exclude>
                           <exclude>org.xml.**</exclude>
+                          <exclude>**.faulttolerance.**</exclude>
                         </excludes>
                       </relocation>
                     </relocations>
