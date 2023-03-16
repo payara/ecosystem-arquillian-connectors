@@ -433,6 +433,8 @@
                         <excludes>
                           <!-- we don't depend on activation, but Jersey refers to it -->
                           <exclude>jakarta.activation.*</exclude>
+                          <!-- we require original class for exception translation -->
+                          <exclude>**.inject.spi.DeploymentException</exclude>
                         </excludes>
                       </relocation>
                       <relocation>
@@ -448,6 +450,7 @@
                           <exclude>org.omg.**</exclude>
                           <exclude>org.ietf.**</exclude>
                           <exclude>org.xml.**</exclude>
+                          <!-- we require original class for exception translation -->
                           <exclude>**.faulttolerance.**</exclude>
                         </excludes>
                       </relocation>
