@@ -434,7 +434,8 @@
                           <!-- we don't depend on activation, but Jersey refers to it -->
                           <exclude>jakarta.activation.*</exclude>
                           <!-- we require original class for exception translation -->
-                          <exclude>**.inject.spi.DeploymentException*</exclude>
+                          <exclude>**.inject.spi.Deployment*</exclude>
+                          <exclude>**.inject.spi.Definition*</exclude>
                         </excludes>
                       </relocation>
                       <relocation>
