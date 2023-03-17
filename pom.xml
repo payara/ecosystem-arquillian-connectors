@@ -62,7 +62,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>parent-payara-containers</artifactId>
-    <version>3.0.alpha8-SNAPSHOT</version>
+    <version>3.0.alpha8</version>
     <packaging>pom</packaging>
 
     <name>Arquillian Container Parent Payara</name>
@@ -106,7 +106,7 @@
         <connection>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</connection>
         <url>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</url>
         <developerConnection>scm:git:git@github.com:payara/ecosystem-arquillian-connectors.git</developerConnection>
-        <tag>${project.version}</tag>
+        <tag>parent-payara-containers-3.0.alpha8</tag>
     </scm>
 
     <licenses>
