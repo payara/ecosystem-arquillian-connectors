@@ -2,6 +2,7 @@ package fish.payara.bomdemo;
 
 import fish.payara.bomdemo.config.EmptyValuesBean;
 import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.DefinitionException;
 import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -51,10 +52,14 @@ public class DeploymentExceptionIT {
             deployer.deploy("mpConfigDeploymentExceptionTest");
         } catch (DeploymentException e) {
             Assert.assertTrue(e instanceof DeploymentException);
+        } catch (DefinitionException e) {
+            Assert.assertTrue(e instanceof DefinitionException);
         } catch (Exception e) {
             Assert.fail("it throws invalid exception class, " +
-                "Expecting " +
+                "Expecting either " +
                 "jakarta.enterprise.inject.spi.DeploymentException. " +
+                "or " +
+                "jakarta.enterprise.inject.spi.DefinitionException. " +
                 "FOUND: " + e.getClass());
         }
     }
