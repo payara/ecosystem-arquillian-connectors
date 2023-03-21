@@ -40,6 +40,8 @@
 
 package fish.payara.bomdemo;
 
+import fish.payara.bomdemo.config.EmptyValuesBean;
+import fish.payara.bomdemo.faulttolerance.FallBackMethodWithArgs;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -73,7 +75,9 @@ public class WholeAppIT {
         Path packageResult = Files.list(Paths.get("target"))
                 .filter(p -> p.getFileName().toString().endsWith(".war"))
                 .findAny().orElseThrow(() -> new IllegalStateException("No .war file in target directory. Run 'mvn verify'"));
-        return ShrinkWrap.createFromZipFile(WebArchive.class, packageResult.toFile());
+        return ShrinkWrap.createFromZipFile(WebArchive.class, packageResult.toFile())
+            .deleteClass(FallBackMethodWithArgs.class)
+            .deleteClass(EmptyValuesBean.class);
     }
 
     @ArquillianResource
