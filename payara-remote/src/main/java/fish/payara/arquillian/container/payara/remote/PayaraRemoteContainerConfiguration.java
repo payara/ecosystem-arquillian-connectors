@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2023 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -66,7 +66,7 @@ import static fish.payara.arquillian.container.payara.clientutils.PayaraClient.A
 import static org.jboss.arquillian.container.spi.client.deployment.Validate.notNullOrEmpty;
 
 /**
- * Configuration for Managed Payara containers.
+ * Configuration for Remote Payara containers.
  *
  * @author <a href="http://community.jboss.org/people/dan.j.allen">Dan Allen</a>
  * @author <a href="http://community.jboss.org/people/LightGuard">Jason Porter</a>
