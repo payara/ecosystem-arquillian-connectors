@@ -72,15 +72,15 @@ import fish.payara.arquillian.container.payara.CommonPayaraManager;
  *
  * @author <a href="http://community.jboss.org/people/LightGuard">Jason Porter</a>
  */
-public class PayaraDeployableContainer implements DeployableContainer<CommonPayaraConfiguration> {
+public class PayaraRemoteDeployableContainer implements DeployableContainer<PayaraRemoteContainerConfiguration> {
 
     private CommonPayaraManager<CommonPayaraConfiguration> payaraManager;
 
-    public Class<CommonPayaraConfiguration> getConfigurationClass() {
-        return CommonPayaraConfiguration.class;
+    public Class<PayaraRemoteContainerConfiguration> getConfigurationClass() {
+        return PayaraRemoteContainerConfiguration.class;
     }
 
-    public void setup(CommonPayaraConfiguration configuration) {
+    public void setup(PayaraRemoteContainerConfiguration configuration) {
         if (configuration == null) {
             throw new IllegalArgumentException("configuration must not be null");
         }
