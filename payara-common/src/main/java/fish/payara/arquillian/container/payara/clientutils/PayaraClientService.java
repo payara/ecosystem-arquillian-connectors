@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2021 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2023 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -71,6 +71,7 @@ import java.util.regex.Matcher;
 
 import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 import jakarta.ws.rs.ProcessingException;
+import fish.payara.arquillian.container.payara.RemoteInstanceConnectionProvider;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
@@ -335,7 +336,21 @@ public class PayaraClientService implements PayaraClient {
         Map<String, String> subComponents = (Map<String, String>) subComponentsResponse.get("properties");
 
         // Build up the HTTPContext object using the nodeAddress information
-        HTTPContext httpContext = new HTTPContext(nodeAddress.getHost(), nodeAddress.getHttpPort());
+        String host = nodeAddress.getHost();
+        int port = nodeAddress.getHttpPort();
+        // If this configuration is for a remote instance, a user might want to override port and/or host
+        if (configuration instanceof RemoteInstanceConnectionProvider) {
+            RemoteInstanceConnectionProvider provider = (RemoteInstanceConnectionProvider) configuration;
+            
+            if (provider.getHttpHost().isPresent()) {
+                host = provider.getHttpHost().get();
+            }
+            if (provider.getHttpPort().isPresent()) {
+                port = provider.getHttpPort().get();
+            }
+        }
+        HTTPContext httpContext = new HTTPContext(host, port);
+        
 
         // Add the servlets to the HTTPContext
         String contextRoot = getApplicationContextRoot(name);
