@@ -57,6 +57,8 @@
 package fish.payara.arquillian.container.payara.clientutils;
 
 import java.net.URI;
+import java.util.Optional;
+import static java.util.function.Predicate.not;
 
 /**
  * @author Z.Paulovics
@@ -103,8 +105,12 @@ public class NodeAddress {
     public NodeAddress(String serverName, String host, int port, int secure_port) {
         this.serverName = serverName;
         this.host = host;
-        this.httpPort = port;
-        this.httpsPort = secure_port;
+        this.httpPort = Optional.ofNullable(System.getProperty("httpPort"))
+            .filter(not(String::isEmpty))
+            .map(Integer::parseInt).orElse(port);
+        this.httpsPort = Optional.ofNullable(System.getProperty("httpsPort"))
+            .filter(not(String::isEmpty))
+            .map(Integer::parseInt).orElse(secure_port);
     }
 
     /**
