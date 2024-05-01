@@ -75,7 +75,7 @@
     <url>https://github.com/payara/Payara</url>
 
     <properties>
-        <version.arquillian_core>1.7.0.Alpha10</version.arquillian_core>
+        <version.arquillian_core>1.8.0.Final</version.arquillian_core>
         <version.jersey>3.1.0-M5</version.jersey>
         <version.jakartaee>10</version.jakartaee>
         <version.jakartaee.api>10.0.0</version.jakartaee.api>
