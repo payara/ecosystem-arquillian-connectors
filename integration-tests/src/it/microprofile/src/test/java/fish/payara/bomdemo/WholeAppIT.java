@@ -136,7 +136,10 @@ public class WholeAppIT {
           }
         }
         */
-        assertEquals(counter, metrics.getJsonObject("application").getJsonNumber("fish.payara.bomdemo.metric.MetricController.endpoint_counter").longValue());
+        JsonObject app = metrics.getJsonObject("application");
+        String key = app.keySet().stream().filter(s -> s.contains("endpoint_counter")).findFirst().orElseThrow(() -> new AssertionError(
+                "endpoint_counter should be present in " + app));
+        assertEquals(counter, metrics.getJsonObject("application").getJsonNumber(key).longValue());
         assertNotNull(metrics.getJsonObject("application").getJsonObject("fish.payara.bomdemo.metric.MetricController.timed-request"));
     }
 
