@@ -101,10 +101,11 @@
 
   <properties>
     <!-- This is Java 11 project -->
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <container.version>@project.version@</container.version>
     <payara.version>@payara.version@</payara.version>
+    <payara.embedded.version>@version.payara.embedded@</payara.embedded.version>
   </properties>
 
   <build>
@@ -130,6 +131,13 @@
             </goals>
             <configuration>
               <failIfNoTests>true</failIfNoTests>
+              <argLine>
+                  --add-opens java.base/java.net=ALL-UNNAMED
+                  --add-opens java.base/sun.net.www.protocol.jar=ALL-UNNAMED
+                  --add-opens java.base/java.lang=ALL-UNNAMED
+                  --add-opens java.base/java.io=ALL-UNNAMED
+                  --add-opens java.naming/javax.naming.spi=ALL-UNNAMED
+              </argLine>
             </configuration>
           </execution>
         </executions>
@@ -158,7 +166,7 @@
         <dependency>
           <groupId>fish.payara.extras</groupId>
           <artifactId>payara-embedded-all</artifactId>
-          <version>${payara.version}</version>
+          <version>${payara.embedded.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -223,7 +231,7 @@
             <configuration>
               <systemPropertyVariables>
                 <!-- Pass location of server installation to arquillian container -->
-                <payara.home>${session.executionRootDirectory}/target/payara6</payara.home>
+                <payara.home>${session.executionRootDirectory}/target/payara7</payara.home>
               </systemPropertyVariables>
             </configuration>
           </plugin>
@@ -304,6 +312,38 @@
         </dependency>
       </dependencies>
 
+    </profile>
+
+    <profile>
+        <id>payara-server-remote</id>
+
+        <dependencies>
+            <dependency>
+                <groupId>fish.payara.arquillian</groupId>
+                <artifactId>payara-client-ee11</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- The actual Arquillian connector -->
+            <dependency>
+                <groupId>fish.payara.arquillian</groupId>
+                <artifactId>arquillian-payara-server-remote</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <javaEEServer>payara-remote</javaEEServer>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
     </profile>
 
     <profile>

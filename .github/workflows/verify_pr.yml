@@ -5,7 +5,7 @@ name: Verify PR
 
 on:
   pull_request:
-    branches: [ master, Payara6, Payara4 ]
+    branches: [ master, Payara6, Payara4, Payara7 ]
     paths-ignore:
       - 'README.*'
       - '**/README.*'
@@ -18,11 +18,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Set up JDK 11
+    - name: Set up JDK 21
       uses: actions/setup-java@v2
       with:
         distribution: zulu
-        java-version: 11
+        java-version: 21
 
     - name: Cache repository
       uses: actions/cache@v2
@@ -40,7 +40,7 @@ jobs:
     - name: Build with Maven
       env:
         MAVEN_OPTS: -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dmaven.wagon.rto=30000 -Djava.net.preferIPv4Stack=true
-      run: mvn -B -V clean verify
+      run: mvn -B -V clean install
 
     - name: Archive logs on failure
       if: failure()
