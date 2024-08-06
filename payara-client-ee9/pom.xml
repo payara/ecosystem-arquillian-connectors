@@ -44,7 +44,7 @@
 
     <groupId>fish.payara.arquillian</groupId>
     <artifactId>payara-client-ee9</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1</version>
     <name>Payara EE 9 client libs</name>
     
     <description>
