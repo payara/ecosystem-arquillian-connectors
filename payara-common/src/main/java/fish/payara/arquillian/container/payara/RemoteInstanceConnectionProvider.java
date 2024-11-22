@@ -67,5 +67,6 @@ public interface RemoteInstanceConnectionProvider {
     
     Optional<String> getHttpHost();
     Optional<Integer> getHttpPort();
+    Optional<Integer> getHttpsPort();
     
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2023 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2024 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -63,7 +63,6 @@ import org.jboss.arquillian.container.spi.ConfigurationException;
 import java.util.Optional;
 
 import static fish.payara.arquillian.container.payara.clientutils.PayaraClient.ADMINSERVER;
-import static org.jboss.arquillian.container.spi.client.deployment.Validate.notNullOrEmpty;
 
 /**
  * Configuration for Remote Payara containers.
@@ -76,7 +75,9 @@ public class PayaraRemoteContainerConfiguration extends CommonPayaraConfiguratio
     
     private String httpHost;
     private Integer httpPort;
+    private Integer httpsPort;
     
+    @Override
     public Optional<String> getHttpHost() {
         return Optional.ofNullable(httpHost);
     }
@@ -87,16 +88,29 @@ public class PayaraRemoteContainerConfiguration extends CommonPayaraConfiguratio
     public void setHttpHost(String httpHost) {
         this.httpHost = httpHost;
     }
-    
+
+    @Override
     public Optional<Integer> getHttpPort() {
         return Optional.ofNullable(httpPort);
     }
-    
+
     /**
      * @param httpPort The port where the remote HTTP end can be reached
      */
     public void setHttpPort(int httpPort) {
         this.httpPort = httpPort;
+    }
+
+    @Override
+    public Optional<Integer> getHttpsPort() {
+        return Optional.ofNullable(httpsPort);
+    }
+
+    /**
+     * @param httpsPort The port where the remote HTTPS end can be reached
+     */
+    public void setHttpsPort(int httpsPort) {
+        this.httpsPort = httpsPort;
     }
 
     @Override
