@@ -76,6 +76,7 @@
 
     <properties>
         <version.arquillian_core>1.9.1.Final</version.arquillian_core>
+        <version.arquillian_testenricher>10.0.0.Final</version.arquillian_testenricher>
         <version.jersey>4.0.0-M1</version.jersey>
         <version.jakartaee>11</version.jakartaee>
         <version.jakartaee.api>11.0.0-M4</version.jakartaee.api>
@@ -274,6 +275,30 @@
                 <scope>import</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.jboss.arquillian.protocol</groupId>
+                <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
+                <version>${version.arquillian_testenricher}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.testenricher</groupId>
+                <artifactId>arquillian-testenricher-cdi-jakarta</artifactId>
+                <version>${version.arquillian_testenricher}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.testenricher</groupId>
+                <artifactId>arquillian-testenricher-ejb-jakarta</artifactId>
+                <version>${version.arquillian_testenricher}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.testenricher</groupId>
+                <artifactId>arquillian-testenricher-resource-jakarta</artifactId>
+                <version>${version.arquillian_testenricher}</version>
+            </dependency>
+        
             <dependency>
                 <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
                 <artifactId>microprofile-fault-tolerance-api</artifactId>
