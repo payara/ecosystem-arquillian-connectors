@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2023 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2024 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -72,7 +72,6 @@ import java.util.regex.Matcher;
 import fish.payara.arquillian.container.payara.CommonPayaraConfiguration;
 import jakarta.ws.rs.ProcessingException;
 import fish.payara.arquillian.container.payara.RemoteInstanceConnectionProvider;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.HTTPContext;
 import org.jboss.arquillian.container.spi.client.protocol.metadata.Servlet;
 
@@ -171,7 +170,7 @@ public class PayaraClientService implements PayaraClient {
         target = configuration.getTarget();
 
         final StringBuilder adminUrlBuilder = new StringBuilder()
-            .append(getHttpProtocolPrefix(configuration.isAdminHttps()))
+            .append(getHttpProtocolPrefix(configuration.isAdminHttpsEnabled()))
             .append(configuration.getAdminHost())
             .append(":")
             .append(configuration.getAdminPort());
@@ -337,20 +336,17 @@ public class PayaraClientService implements PayaraClient {
 
         // Build up the HTTPContext object using the nodeAddress information
         String host = nodeAddress.getHost();
-        int port = nodeAddress.getHttpPort();
+        int port = configuration.isHttpsEnabled() ? nodeAddress.getHttpsPort() : nodeAddress.getHttpPort();
         // If this configuration is for a remote instance, a user might want to override port and/or host
-        if (configuration instanceof RemoteInstanceConnectionProvider) {
-            RemoteInstanceConnectionProvider provider = (RemoteInstanceConnectionProvider) configuration;
-            
+        if (configuration instanceof RemoteInstanceConnectionProvider provider) {
             if (provider.getHttpHost().isPresent()) {
                 host = provider.getHttpHost().get();
             }
             if (provider.getHttpPort().isPresent()) {
-                port = provider.getHttpPort().get();
+                port = configuration.isHttpsEnabled() ? provider.getHttpsPort().get() : provider.getHttpPort().get();
             }
         }
-        HTTPContext httpContext = new HTTPContext(host, port);
-        
+        HTTPContext httpContext = new HTTPContext(host, port, configuration.isHttpsEnabled());
 
         // Add the servlets to the HTTPContext
         String contextRoot = getApplicationContextRoot(name);

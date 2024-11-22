@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2024 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -72,7 +72,9 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
     protected String adminHost = System.getProperty("adminHost", "localhost");
     protected int adminPort = Integer.parseInt(System.getProperty("adminPort", "4848"));
 
+    @Deprecated
     protected boolean adminHttps;
+    protected boolean adminHttpsEnabled = Boolean.getBoolean("adminHttpsEnabled");
     private boolean authorisation;
     private boolean ignoreCertificates;
     private String adminUser;
@@ -83,6 +85,7 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
     private String type;
     private String domain;
     protected boolean debug;
+    private boolean httpsEnabled = Boolean.getBoolean("httpsEnabled");
 
     public CommonPayaraConfiguration() {
         super();
@@ -112,8 +115,8 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
         this.adminPort = adminPort;
     }
 
-    public boolean isAdminHttps() {
-        return adminHttps;
+    public boolean isAdminHttpsEnabled() {
+        return adminHttps || adminHttpsEnabled;
     }
 
     /**
@@ -121,8 +124,21 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
      *     Flag indicating the administration url uses a secure connection. Used to build the URL for the REST
      *     request.
      */
-    public void setAdminHttps(boolean adminHttps) {
-        this.adminHttps = adminHttps;
+    public void setAdminHttpsEnabled(boolean adminHttps) {
+        this.adminHttpsEnabled = adminHttps;
+    }
+
+    public boolean isHttpsEnabled() {
+        return httpsEnabled;
+    }
+
+    /**
+     * @param httpsEnabled
+     *     Flag indicating the application url uses a secure connection. Used to build the URL for the REST
+     *     request.
+     */
+    public void setHttpsEnabled(boolean httpsEnabled) {
+        this.httpsEnabled = httpsEnabled;
     }
 
     public boolean isAuthorisation() {
