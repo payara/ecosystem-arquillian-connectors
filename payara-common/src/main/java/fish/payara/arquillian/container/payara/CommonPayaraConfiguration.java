@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2024 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-2025 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -86,6 +86,7 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
     private String domain;
     protected boolean debug;
     private boolean httpsEnabled = Boolean.getBoolean("httpsEnabled");
+    private final boolean addDeployName = Boolean.getBoolean("addDeployName");
 
     public CommonPayaraConfiguration() {
         super();
@@ -304,5 +305,9 @@ public class CommonPayaraConfiguration implements ContainerConfiguration {
             Validate.notNull(getAdminUser(), "adminUser must be specified to use authorisation");
             Validate.notNull(getAdminPassword(), "adminPassword must be specified to use authorisation");
         }
+    }
+
+    public boolean isAddDeployName() {
+        return addDeployName;
     }
 }
