@@ -1,5 +1,5 @@
 /*
- * Copyright (c) [2017-2021] Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) [2017-2025] Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -236,7 +236,9 @@ public class CommonPayaraManager<C extends CommonPayaraConfiguration> {
     private void addDeployFormFields(String name, PayaraClient.MultiPart deployform) {
 
         // Add the name field, the name is the archive filename without extension
-        deployform.field("name", name, TEXT_PLAIN_TYPE);
+        if (configuration.isAddDeployName()) {
+            deployform.field("name", name, TEXT_PLAIN_TYPE);
+        }
 
         // Add the target field (the default is "server" - Admin Server)
         deployform.field("target", configuration.getTarget(), TEXT_PLAIN_TYPE);
